@@ -9,23 +9,19 @@ export class UserFilterPipe implements PipeTransform {
         if (!items) {
             return [];
         }
-        if (!value) {
+        if ( !value) {
             return items;
         }
 
-        function checker(item) {
-            const keys = Object.keys(item);
-            let found: any = false;
-            console.log(item);
-            console.log(keys);
-            for (const key of keys) {
-                if(item[key])
-                    found = item[key].toString().toLowerCase().includes(value.toLowerCase());
-                if (found)
-                    return found;
-            }
-        }
-
-        return items.filter(checker);
+        return items.filter(singleItem =>
+            singleItem['fname'].toLowerCase().includes(value.toLowerCase()) ||
+            singleItem['lname'].toLowerCase().includes(value.toLowerCase()) ||
+            singleItem['id'].toString().toLowerCase().includes(value.toLowerCase()) ||
+            singleItem['login'].toLowerCase().includes(value.toLowerCase()) ||
+            singleItem['email'].toLowerCase().includes(value.toLowerCase()) ||
+            singleItem['fonction'].toLowerCase().includes(value.toLowerCase()) ||
+            singleItem['role']['role'].toLowerCase().includes(value.toLowerCase()) ||
+            singleItem['structure']['nom'].toLowerCase().includes(value.toLowerCase())
+        );
     }
 }

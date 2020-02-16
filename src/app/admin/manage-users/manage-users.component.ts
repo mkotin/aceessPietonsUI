@@ -5,6 +5,8 @@ import {RoleService} from "../../services/role.service";
 import {UserService} from "../../services/user.service";
 import Swal from 'sweetalert2';
 
+declare let $;
+
 
 @Component({
     selector: 'app-manage-users',
@@ -13,13 +15,21 @@ import Swal from 'sweetalert2';
 })
 export class ManageUsersComponent implements OnInit {
     newUser: User = new User();
+    viewUser: any;
+    editUser: any;
+    deleteUser: any;
     structures: any[];
     roles: any[];
     users: any[];
     searchUser: any;
+    config: any;
+    confirmPassword = "";
 
-    constructor(private structureService: StructureService, private roleService: RoleService, private userService: UserService,
-               ) {
+    constructor(private structureService: StructureService, private roleService: RoleService, private userService: UserService,) {
+        this.config = {
+            itemsPerPage: 25,
+            currentPage: 1,
+        };
     }
 
     ngOnInit() {
@@ -31,7 +41,7 @@ export class ManageUsersComponent implements OnInit {
     fetchUsers() {
         this.userService.getUsers().subscribe(
             (res: any) => {
-                console.log(res);
+                this.config.totalItems = res.data.length;
                 this.users = res.data;
             }, (err: any) => {
                 console.log(err);
@@ -45,6 +55,10 @@ export class ManageUsersComponent implements OnInit {
                 });
             }
         );
+    }
+
+    pageChanged(event) {
+        this.config.currentPage = event;
     }
 
     fetchStructures() {
@@ -109,6 +123,8 @@ export class ManageUsersComponent implements OnInit {
         this.userService.registerUser(this.newUser).subscribe(
             (res: any) => {
                 if (res.success) {
+                    this.newUser = new User();
+                    this.fetchUsers();
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
@@ -116,7 +132,6 @@ export class ManageUsersComponent implements OnInit {
                         showConfirmButton: false,
                         timer: 2000
                     });
-                    this.newUser = new User();
                 } else {
                     if (res.code === 0) {
                         Swal.fire({
@@ -145,7 +160,7 @@ export class ManageUsersComponent implements OnInit {
                             showConfirmButton: false,
                             timer: 2000
                         });
-                    }  else {
+                    } else {
                         Swal.fire({
                             icon: 'error',
                             position: 'top-end',
@@ -194,6 +209,121 @@ export class ManageUsersComponent implements OnInit {
                         timer: 2000
                     });
                 }
+            }, () => {
+            }
+        );
+    }
+
+    updateUser() {
+        this.userService.updateUser(this.editUser).subscribe(
+            (res: any) => {
+                if (res.success) {
+                    this.editUser = {};
+                    this.fetchUsers();
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Utilisateur mis à jour!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    $("#editUserModal").modal('hide');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            }, (err) => {
+                Swal.fire({
+                    icon: 'error',
+                    position: 'top-end',
+                    title: 'Oops...',
+                    text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }, () => {
+            }
+        );
+    }
+
+    deleteMyUser() {
+        this.userService.deleteUser(this.deleteUser).subscribe(
+            (res: any) => {
+                if (res.success) {
+                    this.deleteUser = '';
+                    this.fetchUsers();
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Utilisateur supprimé!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    $("#deleteUserModal").modal('hide');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            }, (err) => {
+                Swal.fire({
+                    icon: 'error',
+                    position: 'top-end',
+                    title: 'Oops...',
+                    text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }, () => {
+            }
+        );
+    }
+
+    resetPassword() {
+        this.userService.updateUser(this.editUser).subscribe(
+            (res: any) => {
+                if (res.success) {
+                    this.editUser = {};
+                    this.fetchUsers();
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Mot de passe utilisateur mis à jour',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    $("#passwordResetModal").modal('hide');
+                    this.confirmPassword = '';
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            }, (err) => {
+                Swal.fire({
+                    icon: 'error',
+                    position: 'top-end',
+                    title: 'Oops...',
+                    text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
             }, () => {
             }
         );

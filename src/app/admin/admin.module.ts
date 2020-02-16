@@ -11,6 +11,7 @@ import {FormsModule} from "@angular/forms";
 import {NgxUiLoaderModule} from "ngx-ui-loader";
 
 import { UserFilterPipe } from "./pipes/user-filter.pipe";
+import {NgxPaginationModule} from "ngx-pagination";
 
 @NgModule({
     declarations: [IndexComponent, ManageUsersComponent, UserFilterPipe],
@@ -19,6 +20,7 @@ import { UserFilterPipe } from "./pipes/user-filter.pipe";
         CommonModule,
         FormsModule,
         NgxUiLoaderModule,
+        NgxPaginationModule,
         AdminRoutingModule
     ],
     providers: [

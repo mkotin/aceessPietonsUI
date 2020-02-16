@@ -28,6 +28,7 @@ import {CarouselComponent} from './themes-component/carousel/carousel.component'
 import {TabsComponent} from './themes-component/tabs/tabs.component';
 import {HttpClientModule} from "@angular/common/http";
 import {NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule} from "ngx-ui-loader";
+import {NgxPaginationModule} from "ngx-pagination";
 
 @NgModule({
     declarations: [
@@ -57,6 +58,7 @@ import {NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule} from 
         BrowserModule,
         RouterModule,
         AppRoutingModule,
+        NgxPaginationModule,
         FormsModule,
         NgxUiLoaderModule,
         NgxUiLoaderHttpModule,

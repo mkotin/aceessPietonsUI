@@ -1,181 +1,421 @@
 <nav aria-label="breadcrumb" role="navigation">
-  <ol class="breadcrumb breadcrumb-custom bg-inverse-primary">
-    <li class="breadcrumb-item"><a routerLink="/dashboard">Accueil</a></li>
-    <li class="breadcrumb-item"><a routerLink="/admin">Admin</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><span>Gérer utilisateurs</span></li>
-  </ol>
+    <ol class="breadcrumb breadcrumb-custom bg-inverse-primary">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Accueil</a></li>
+        <li class="breadcrumb-item"><a routerLink="/admin">Admin</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><span>Gérer utilisateurs</span></li>
+    </ol>
 </nav>
 <div class="row">
-  <!-- Add user start -->
-  <div class="card w-100">
-    <div class="card-body">
-      <h4 class="mb-4">Ajouter un utilisateur</h4>
-      <form #addUserForm="ngForm" (ngSubmit)="addUser()" class="form-sample">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">Nom</label>
-              <div class="col-sm-9">
-                <input required name="lname" [(ngModel)]="newUser.lname" type="text" class="form-control" />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">Prénoms</label>
-              <div class="col-sm-9">
-                <input required name="fname" [(ngModel)]="newUser.fname" type="text" class="form-control" />
-              </div>
-            </div>
-          </div>
+    <!-- Add user start -->
+    <div class="card w-100">
+        <div class="card-body">
+            <h4 class="mb-4">Ajouter un utilisateur</h4>
+            <form #addUserForm="ngForm" (ngSubmit)="addUser()" class="form-sample">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Nom</label>
+                            <div class="col-sm-9">
+                                <input required name="lname" [(ngModel)]="newUser.lname" type="text"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Prénoms</label>
+                            <div class="col-sm-9">
+                                <input required name="fname" [(ngModel)]="newUser.fname" type="text"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Email</label>
+                            <div class="col-sm-9">
+                                <input required name="email" [(ngModel)]="newUser.email" type="text"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Fonction</label>
+                            <div class="col-sm-9">
+                                <input required name="fonction" [(ngModel)]="newUser.fonction" class="form-control"
+                                       type="text">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Login</label>
+                            <div class="col-sm-9">
+                                <input required name="login" [(ngModel)]="newUser.login" type="text"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Mot de passe</label>
+                            <div class="col-sm-9">
+                                <input required name="passwor" [(ngModel)]="newUser.password" type="password"
+                                       class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Structure</label>
+                            <div class="col-sm-9">
+                                <select name="structure_id" [(ngModel)]="newUser.structure_id" class="form-control">
+                                    <ng-container *ngIf="structures">
+                                        <option [value]="structure.id" *ngFor="let structure of structures">
+                                            {{structure.nom}}
+                                        </option>
+                                    </ng-container>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Role</label>
+                            <div class="col-sm-9">
+                                <select name="role_id" [(ngModel)]="newUser.role_id" class="form-control">
+                                    <ng-container *ngIf="roles">
+                                        <option [value]="role.id" *ngFor="let role of roles">{{role.role}}</option>
+                                    </ng-container>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pull-right">
+                    <button type="button" (click)="addUserForm.reset()" class="btn btn-light mr-2">Reintialiser</button>
+                    <button [disabled]="!addUserForm.form.valid" type="submit" class="btn btn-primary">Enregistrer
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">Email</label>
-              <div class="col-sm-9">
-                <input required name="email" [(ngModel)]="newUser.email" type="text" class="form-control" />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">Fonction</label>
-              <div class="col-sm-9">
-                <input required name="fonction" [(ngModel)]="newUser.fonction" class="form-control" type="text">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">Login</label>
-              <div class="col-sm-9">
-                <input required name="login" [(ngModel)]="newUser.login" type="text" class="form-control" />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">Mot de passe</label>
-              <div class="col-sm-9">
-                <input required name="passwor" [(ngModel)]="newUser.password" type="password" class="form-control">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">Structure</label>
-              <div class="col-sm-9">
-                <select name="structure_id" [(ngModel)]="newUser.structure_id" class="form-control">
-                  <ng-container *ngIf="structures">
-                    <option [value]="structure.id" *ngFor="let structure of structures">{{structure.nom}}</option>
-                  </ng-container>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group row">
-              <label class="col-sm-3 col-form-label">Role</label>
-              <div class="col-sm-9">
-                <select name="role_id" [(ngModel)]="newUser.role_id" class="form-control">
-                  <ng-container *ngIf="roles">
-                    <option [value]="role.id" *ngFor="let role of roles">{{role.role}}</option>
-                  </ng-container>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row pull-right">
-          <button type="button" (click)="addUserForm.reset()" class="btn btn-light mr-2">Reintialiser</button>
-          <button [disabled]="!addUserForm.form.valid" type="submit" class="btn btn-primary">Enregistrer</button>
-        </div>
-      </form>
     </div>
-  </div>
-  <!-- Add user end -->
+    <!-- Add user end -->
 
-  <!-- Users table start -->
-  <div class="card w-100 mt-4">
-    <div class="card-body">
-      <h4 class="mb-4">Utilisateurs</h4>
-      <div>
-        <input style="font-size: 14px;" type="text" class="form-control" name="searchUser"
-               [(ngModel)]="searchUser" placeholder="Rechercher utilisateur..."/>
-      </div>
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>
-            User
-          </th>
-          <th>
-            Nom
-          </th>
-          <th>
-            Role
-          </th>
-          <th>
-            Structure
-          </th>
-          <th>
-            Actions
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let user of users | userFilter : searchUser; let i = index">
-          <td class="py-1">
-            <img src="assets/images/faces-clipart/pic-1.png" alt="image" />
-          </td>
-          <td>
-            {{user.lname}} {{user.fname}}
-          </td>
-          <td>
-            {{user.role.role}}
-          </td>
-          <td>
-            {{user.structure.nom}}
-          </td>
-          <td>
-            <div class="dropdown">
-              <button class="btn btn-primary px-2 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Actions
-              </button>
-              <div style="font-size: 14px;" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Détails</a>
-                <a class="dropdown-item" href="#">Modifier</a>
-                <a class="dropdown-item" href="#">Supprimer</a>
-                <a class="dropdown-item" href="#">Reintialiser mot de passe</a>
-              </div>
+    <!-- Users table start -->
+    <div class="card w-100 mt-4">
+        <div class="card-body">
+            <h4 class="mb-4">Utilisateurs</h4>
+            <div>
+                <input style="font-size: 14px;" type="text" class="form-control" name="searchUser"
+                       [(ngModel)]="searchUser" placeholder="Rechercher utilisateur..."/>
             </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>
+                        User
+                    </th>
+                    <th>
+                        Nom
+                    </th>
+                    <th>
+                        Role
+                    </th>
+                    <th>
+                        Structure
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let user of users | paginate: config | userFilter : searchUser; let i = index">
+                    <td class="py-1">
+                        <img src="assets/images/faces-clipart/pic-1.png" alt="image"/>
+                    </td>
+                    <td>
+                        {{user.lname}} {{user.fname}}
+                    </td>
+                    <td>
+                        {{user.role.role}}
+                    </td>
+                    <td>
+                        {{user.structure.nom}}
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-primary px-2 dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div style="font-size: 14px;" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" style="cursor: pointer" type="button" (click)="viewUser = user"
+                                   data-toggle="modal" data-target="#viewUserModal">Détails</a>
+                                <a class="dropdown-item" style="cursor: pointer" type="button" (click)="editUser = user"
+                                   data-toggle="modal" data-target="#editUserModal">Modifier</a>
+                                <a class="dropdown-item" style="cursor: pointer" type="button"
+                                   (click)="deleteUser = user.id" data-toggle="modal" data-target="#deleteUserModal">Supprimer</a>
+                                <a class="dropdown-item" style="cursor: pointer" type="button" (click)="editUser = user"
+                                   data-toggle="modal" data-target="#passwordResetModal" href="#">Reintialiser mot de
+                                    passe</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="mt-3 text-center">
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+        </div>
     </div>
-  </div>
-  <!-- Users table end -->
+    <!-- Users table end -->
 
 </div>
 
 <!-- Modals start -->
-  <!-- View user details modals start-->
-<div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby="viewUserModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-
-      </div>
+<!-- View user details modals start-->
+<div *ngIf="viewUser" class="modal fade" id="viewUserModal" tabindex="-1" role="dialog"
+     aria-labelledby="viewUserModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Détails utilisateur</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body bg-white">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <span class="mr-1">Nom:</span>
+                        <span>{{viewUser.lname}}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="mr-1">Prénoms:</span>
+                        <span>{{viewUser.fname}}</span>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <span class="mr-1">Email:</span>
+                        <span>{{viewUser.email}}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="mr-1">Fonction:</span>
+                        <span>{{viewUser.fonction}}</span>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <span class="mr-1">Login:</span>
+                        <span>{{viewUser.login}}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="mr-1">Role:</span>
+                        <span>{{viewUser.role.role}}</span>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <span class="mr-1">Structure:</span>
+                        <span>{{viewUser.structure.nom}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-  <!-- View user details modals end-->
+<!-- View user details modals end-->
+
+<!--Edit User Modal start -->
+<div *ngIf="editUser" class="modal fade" id="editUserModal" tabindex="-1" role="dialog"
+     aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modifier utilisateur</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body bg-white">
+                <form #editUserForm="ngForm" (ngSubmit)="updateUser(editUser)" class="form-sample">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Nom</label>
+                                <div class="col-sm-9">
+                                    <input required name="lname" [(ngModel)]="editUser.lname" type="text"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Prénoms</label>
+                                <div class="col-sm-9">
+                                    <input required name="fname" [(ngModel)]="editUser.fname" type="text"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Email</label>
+                                <div class="col-sm-9">
+                                    <input required name="email" [(ngModel)]="editUser.email" type="text"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Fonction</label>
+                                <div class="col-sm-9">
+                                    <input required name="fonction" [(ngModel)]="editUser.fonction" class="form-control"
+                                           type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Login</label>
+                                <div class="col-sm-9">
+                                    <input required name="login" [(ngModel)]="editUser.login" type="text"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Mot de passe</label>
+                                <div class="col-sm-9">
+                                    <input disabled name="password" type="password"
+                                           class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Structure</label>
+                                <div class="col-sm-9">
+                                    <select name="structure_id" [(ngModel)]="editUser.structure_id"
+                                            class="form-control">
+                                        <ng-container *ngIf="structures">
+                                            <option [value]="structure.id" *ngFor="let structure of structures">
+                                                {{structure.nom}}
+                                            </option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Role</label>
+                                <div class="col-sm-9">
+                                    <select name="role_id" [(ngModel)]="editUser.role_id" class="form-control">
+                                        <ng-container *ngIf="roles">
+                                            <option [value]="role.id" *ngFor="let role of roles">{{role.role}}</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pull-right">
+                        <button type="button" data-dismiss="modal" class="btn btn-light mr-2">Fermer</button>
+                        <button [disabled]="!editUserForm.form.valid" type="submit" class="btn btn-primary">Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Edit User Modal end -->
+
+<!-- Delete User Modal start -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Supprimer utilisateur</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body bg-white">
+                <p>Êtes vous sûr de vouloir supprimer cet utilisateur ?</p>
+                <div class="pull-right">
+                    <button type="button" (click)="deleteMyUser()" class="btn btn-danger mr-1">Supprimer</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete User Modal end -->
+
+<!-- Reset password Modal start -->
+    <div *ngIf="editUser" class="modal fade" id="passwordResetModal" tabindex="-1" role="dialog" aria-labelledby="passwordResetModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Réinitialiser mot de passse</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body bg-white">
+                    <form #resetPasswordForm="ngForm">
+                        <div class="row mb-2">
+                            <label class="form-label">Entrez le nouveau mot de passe:</label>
+                            <div class="w-100">
+                                <input  required name="password" [(ngModel)]="editUser.password" type="password"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="form-label">Confirmez mot de passe</label>
+                            <div class="w-100">
+                                <input  required name="passwordconfirm" [(ngModel)]="confirmPassword" type="password"
+                                       class="form-control"/>
+                                <span *ngIf="editUser.password != confirmPassword" class="text-danger">
+                                    Les mots de passe ne correpondent pas
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-2 pull-right">
+                            <button type="button" [disabled]="!resetPasswordForm.form.valid || (editUser.password != confirmPassword)" (click)="resetPassword()" class="btn btn-primary mr-1">Enrégistrer</button>
+                            <button type="button" (click)="confirmPassword = ''" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Reset password Modal end -->
+
 <!-- Modals end -->
 
 
