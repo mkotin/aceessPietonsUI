@@ -3,6 +3,7 @@ export class Structure {
                 public nom?: String,
                 public numero_accreditation?: String,
                 public numero_agrement?: String,
+                public email?: String,
                 public telephone?: String,
                 public siege?: String,
                 public sigle?: String,

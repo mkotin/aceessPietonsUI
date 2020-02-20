@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
+import {AppHttpService} from "./http/app-http.service";
 
 
 @Injectable({
@@ -8,11 +9,11 @@ import {environment} from '../../environments/environment';
 })
 export class RoleService {
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpService: AppHttpService) {
     }
 
     getRoles() {
         // todo: attach api key to headers
-        return this.httpClient.get(environment.apiURL + 'roles');
+        return this.httpService.get(environment.apiURL + 'roles');
     }
 }

@@ -1,17 +1,25 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
+import {AppHttpService} from "./http/app-http.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class StructureService {
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpService: AppHttpService) {
     }
 
     getStructures() {
-        // todo: attach api key to headers
-        return this.httpClient.get(environment.apiURL + 'structures');
+        return this.httpService.get(environment.apiURL + 'structures');
+    }
+
+    addStructure(data) {
+        return this.httpService.post(environment.apiURL + 'structure    ', data);
+    }
+
+    updateStructure(data) {
+        return this.httpService.put(environment.apiURL + 'structure    ', data);
     }
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {IndexComponent} from "./index/index.component";
 import {ManageUsersComponent} from "./manage-users/manage-users.component";
+import {ManageStructuresComponent} from "./manage-structures/manage-structures.component";
 
 const routes: Routes = [
     {
@@ -11,6 +12,10 @@ const routes: Routes = [
     {
         path: 'manage-users',
         component: ManageUsersComponent
+    },
+    {
+        path: 'manage-structures',
+        component: ManageStructuresComponent
     }
 ];
 

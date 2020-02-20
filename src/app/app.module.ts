@@ -7,10 +7,10 @@ import {AppRoutingModule} from './app-routing.module';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AppComponent} from './app.component';
-import {NavbarComponent} from './themes-component/navbar/navbar.component';
-import {SidebarComponent} from './themes-component/sidebar/sidebar.component';
+import {NavbarComponent} from './navbar/navbar.component';
+import {SidebarComponent} from './sidebar/sidebar.component';
 import {FooterComponent} from './themes-component/footer/footer.component';
-import {DashboardComponent} from './themes-component/dashboard/dashboard.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
 import {FormsComponent} from './themes-component/forms/forms.component';
 import {ButtonsComponent} from './themes-component/buttons/buttons.component';
 import {TablesComponent} from './themes-component/tables/tables.component';
@@ -29,6 +29,8 @@ import {TabsComponent} from './themes-component/tabs/tabs.component';
 import {HttpClientModule} from "@angular/common/http";
 import {NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule} from "ngx-ui-loader";
 import {NgxPaginationModule} from "ngx-pagination";
+import { LoginComponent } from './login/login.component';
+import { MainComponent } from './main/main.component';
 
 @NgModule({
     declarations: [
@@ -52,6 +54,8 @@ import {NgxPaginationModule} from "ngx-pagination";
         TooltipsComponent,
         CarouselComponent,
         TabsComponent,
+        LoginComponent,
+        MainComponent,
     ],
     imports: [
         HttpClientModule,

@@ -12,9 +12,11 @@ import {NgxUiLoaderModule} from "ngx-ui-loader";
 
 import { UserFilterPipe } from "./pipes/user-filter.pipe";
 import {NgxPaginationModule} from "ngx-pagination";
+import { ManageStructuresComponent } from './manage-structures/manage-structures.component';
+import {StructureFilterPipe} from "./pipes/structure-filter.pipe";
 
 @NgModule({
-    declarations: [IndexComponent, ManageUsersComponent, UserFilterPipe],
+    declarations: [IndexComponent, ManageUsersComponent, UserFilterPipe, StructureFilterPipe, ManageStructuresComponent],
     imports: [
         HttpClientModule,
         CommonModule,
@@ -27,7 +29,7 @@ import {NgxPaginationModule} from "ngx-pagination";
         StructureService
     ],
     exports: [
-        UserFilterPipe
+        UserFilterPipe, StructureFilterPipe
     ]
 })
 export class AdminModule {

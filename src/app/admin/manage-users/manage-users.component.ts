@@ -25,7 +25,7 @@ export class ManageUsersComponent implements OnInit {
     config: any;
     confirmPassword = "";
 
-    constructor(private structureService: StructureService, private roleService: RoleService, private userService: UserService,) {
+    constructor(private structureService: StructureService, private roleService: RoleService, private userService: UserService) {
         this.config = {
             itemsPerPage: 25,
             currentPage: 1,

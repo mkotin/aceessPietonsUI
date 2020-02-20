@@ -1,0 +1,387 @@
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb breadcrumb-custom bg-inverse-primary">
+    <li class="breadcrumb-item"><a routerLink="/dashboard">Accueil</a></li>
+    <li class="breadcrumb-item"><a routerLink="/admin">Admin</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><span>Gérer structures</span></li>
+  </ol>
+</nav>
+<div class="row">
+  <!-- Add structure start -->
+  <div class="card w-100">
+    <div class="card-body">
+      <h4 class="mb-4">Ajouter une structure</h4>
+      <form #addStructureForm="ngForm" (ngSubmit)="addStructure()" class="form-sample">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Nom</label>
+              <div class="col-sm-9">
+                <input required name="nom" [(ngModel)]="newStructure.nom" type="text"
+                       class="form-control"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Accréditation</label>
+              <div class="col-sm-9">
+                <input  name="numero_accreditation" [(ngModel)]="newStructure.numero_accreditation" type="text"
+                       class="form-control"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Agrément</label>
+              <div class="col-sm-9">
+                <input  name="numero_agrement" [(ngModel)]="newStructure.numero_agrement" type="text"
+                       class="form-control"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Email</label>
+              <div class="col-sm-9">
+                <input  name="email" [(ngModel)]="newStructure.email" class="form-control"
+                       type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Téléphone</label>
+              <div class="col-sm-9">
+                <input required name="telephone" [(ngModel)]="newStructure.telephone" type="text"
+                       class="form-control"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Siège</label>
+              <div class="col-sm-9">
+                <input required name="siege" [(ngModel)]="newStructure.siege" type="text"
+                       class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Sigle</label>
+              <div class="col-sm-9">
+                <input  name="sigle" [(ngModel)]="newStructure.sigle" type="text"
+                       class="form-control"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Ifu</label>
+              <div class="col-sm-9">
+                <input  name="ifu" [(ngModel)]="newStructure.ifu" type="text"
+                       class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Responsable</label>
+              <div class="col-sm-9">
+                <input  name="responsable" [(ngModel)]="newStructure.responsable" type="text"
+                       class="form-control"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row pull-right">
+          <button type="button" (click)="addStructureForm.reset()" class="btn btn-light mr-2">Reintialiser</button>
+          <button [disabled]="!addStructureForm.form.valid" type="submit" class="btn btn-primary">Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Add structure end -->
+
+  <!-- Structures table start -->
+  <div class="card w-100 mt-4">
+    <div class="card-body">
+      <h4 class="mb-4">Structures</h4>
+      <div>
+        <input style="font-size: 14px;" type="text" class="form-control" name="searchStructure"
+               [(ngModel)]="searchStructure" placeholder="Rechercher structure..."/>
+      </div>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>
+            Nom
+          </th>
+          <th>
+            Téléphone
+          </th>
+          <th>
+            Email
+          </th>
+          <th>
+            Responsable
+          </th>
+          <th>
+            Actions
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let structure of structures | paginate: config | structureFilter : searchStructure; let i = index">
+          <td class="py-1">
+            {{structure.nom}}
+          </td>
+          <td>
+            {{structure.telephone}}
+          </td>
+          <td>
+            {{structure.email}}
+          </td>
+          <td>
+            {{structure.responsable}}
+          </td>
+          <td>
+            <div class="dropdown">
+              <button class="btn btn-primary px-2 dropdown-toggle" type="button" id="dropdownMenuButton"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Actions
+              </button>
+              <div style="font-size: 14px;" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" style="cursor: pointer" type="button" (click)="viewStructure = structure"
+                   data-toggle="modal" data-target="#viewStructureModal">Détails</a>
+                <a class="dropdown-item" style="cursor: pointer" type="button" (click)="editStructure = structure"
+                   data-toggle="modal" data-target="#editStructureModal">Modifier</a>
+                <a class="dropdown-item" style="cursor: pointer" type="button"
+                   (click)="deleteStructure = structure.id" data-toggle="modal" data-target="#deleteUserModal">Supprimer</a>
+              </div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="mt-3 text-center">
+        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
+  <!-- Structures table end -->
+</div>
+
+<!-- Modals start -->
+<!-- View structure details modals start-->
+<div *ngIf="viewStructure" class="modal fade" id="viewStructureModal" tabindex="-1" role="dialog"
+     aria-labelledby="viewStructureModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Détails structure</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Nom:</span>
+            <span>{{viewStructure.nom}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Accréditation:</span>
+            <span>{{viewStructure.numero_accreditation}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Agrément:</span>
+            <span>{{viewStructure.numero_agrement}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Email:</span>
+            <span>{{viewStructure.email}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Téléphone:</span>
+            <span>{{viewStructure.telephone}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Siege:</span>
+            <span>{{viewStructure.siege}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Sigle:</span>
+            <span>{{viewStructure.sigle}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Ifu:</span>
+            <span>{{viewStructure.ifu}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Responsable:</span>
+            <span>{{viewStructure.responsable}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- View user details modals end-->
+
+<!--Edit User Modal start -->
+<div *ngIf="editStructure" class="modal fade" id="editStructureModal" tabindex="-1" role="dialog"
+     aria-labelledby="editStructureModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modifier structure</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <form #editStructureForm="ngForm" (ngSubmit)="updateStructure(editStructure)" class="form-sample">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Nom</label>
+                <div class="col-sm-9">
+                  <input required name="nom" [(ngModel)]="editStructure.nom" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Accréditation</label>
+                <div class="col-sm-9">
+                  <input  name="numero_accreditation" [(ngModel)]="editStructure.numero_accreditation" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Agrément</label>
+                <div class="col-sm-9">
+                  <input  name="numero_agrement" [(ngModel)]="editStructure.numero_agrement" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Email</label>
+                <div class="col-sm-9">
+                  <input  name="email" [(ngModel)]="editStructure.email" class="form-control"
+                         type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Téléphone</label>
+                <div class="col-sm-9">
+                  <input  name="telephone" [(ngModel)]="editStructure.telephone" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Siège</label>
+                <div class="col-sm-9">
+                  <input [(ngModel)]="editStructure.siege"  name="siege" type="text"
+                         class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Sigle</label>
+                <div class="col-sm-9">
+                  <input name="sigle" [(ngModel)]="editStructure.sigle" type="text"
+                         class="form-control">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Ifu</label>
+                <div class="col-sm-9">
+                  <input name="ifu" [(ngModel)]="editStructure.ifu" type="text"
+                         class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Responsable</label>
+                <div class="col-sm-9">
+                  <input name="responsable" [(ngModel)]="editStructure.responsable" type="text"
+                         class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row pull-right">
+            <button type="button" data-dismiss="modal" class="btn btn-light mr-2">Fermer</button>
+            <button [disabled]="!editStructureForm.form.valid" type="submit" class="btn btn-primary">Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Edit User Modal end -->
+
+<!-- Delete User Modal start -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Supprimer utilisateur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <p>Êtes vous sûr de vouloir supprimer cet utilisateur ?</p>
+        <div class="pull-right">
+          <button type="button" (click)="deleteMyUser()" class="btn btn-danger mr-1">Supprimer</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delete User Modal end -->

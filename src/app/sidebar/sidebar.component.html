@@ -4,34 +4,34 @@
       <div class="nav-link">
         <div class="user-wrapper">
           <div class="profile-image">
-            <img src="assets/images/faces/face1.jpg" alt="profile image">
+            <img src="assets/common/images/man.png" alt="profile image">
           </div>
           <div class="text-wrapper">
-            <p class="profile-name">Richard V.Welsh</p>
+            <p *ngIf="authUser" class="profile-name">{{ authUser.lname + ' ' + authUser.fname }}</p>
             <div>
-              <small class="designation text-muted">Manager</small>
+              <small *ngIf="authUser" class="designation text-muted">{{ authUser.role.role }}</small>
               <span class="status-indicator online"></span>
             </div>
           </div>
         </div>
-        <button class="btn btn-success btn-block">New Project
+        <button class="btn btn-success btn-block">Demande de titres
           <i class="mdi mdi-plus"></i>
         </button>
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+      <a class="nav-link" routerLink="/app/dashboard" routerLinkActive="active">
         <i class="menu-icon mdi mdi-television"></i>
         <span class="menu-title">Dashboard</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" routerLink="/forms" routerLinkActive="active">
+      <a class="nav-link" routerLink="/app/admin" routerLinkActive="active">
         <i class="menu-icon mdi mdi-notification-clear-all"></i>
-        <span class="menu-title">Form elements</span>
+        <span class="menu-title">ADMIN</span>
       </a>
     </li>
-    <li class="nav-item">
+    <!--<li class="nav-item">
       <a class="nav-link" routerLink="/buttons" routerLinkActive="active">
         <i class="menu-icon mdi mdi-dna"></i>
         <span class="menu-title">Buttons</span>
@@ -114,6 +114,6 @@
         <i class="menu-icon mdi mdi-format-italic"></i>
         <span class="menu-title">Typography</span>
       </a>
-    </li>
+    </li>-->
   </ul>
 </nav>

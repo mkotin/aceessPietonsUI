@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb" role="navigation">
     <ol class="breadcrumb breadcrumb-custom bg-inverse-primary">
-        <li class="breadcrumb-item"><a routerLink="/dashboard">Accueil</a></li>
-        <li class="breadcrumb-item"><a routerLink="/admin">Admin</a></li>
+        <li class="breadcrumb-item"><a routerLink="/app/dashboard">Accueil</a></li>
+        <li class="breadcrumb-item"><a routerLink="/app/admin">Admin</a></li>
         <li class="breadcrumb-item active" aria-current="page"><span>Gérer utilisateurs</span></li>
     </ol>
 </nav>
@@ -65,7 +65,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Mot de passe</label>
                             <div class="col-sm-9">
-                                <input required name="passwor" [(ngModel)]="newUser.password" type="password"
+                                <input required name="password" [(ngModel)]="newUser.password" type="password"
                                        class="form-control">
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-import {DashboardComponent} from './themes-component/dashboard/dashboard.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
 import {FormsComponent} from './themes-component/forms/forms.component';
 import {ButtonsComponent} from './themes-component/buttons/buttons.component';
 import {TablesComponent} from './themes-component/tables/tables.component';
@@ -17,31 +17,52 @@ import {DropdownComponent} from './themes-component/dropdown/dropdown.component'
 import {TooltipsComponent} from './themes-component/tooltips/tooltips.component';
 import {CarouselComponent} from './themes-component/carousel/carousel.component';
 import {TabsComponent} from './themes-component/tabs/tabs.component';
+import {LoginComponent} from "./login/login.component";
+import {MainComponent} from "./main/main.component";
+import {AuthGuardService} from "./services/auth/auth-guard.service";
 
 const routes: Routes = [
     // Themes components routes
-    {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
-    {path: 'dashboard', component: DashboardComponent},
-    {path: 'forms', component: FormsComponent},
-    {path: 'buttons', component: ButtonsComponent},
-    {path: 'tables', component: TablesComponent},
-    {path: 'icons', component: IconsComponent},
-    {path: 'typography', component: TypographyComponent},
-    {path: 'alerts', component: AlertsComponent},
-    {path: 'accordions', component: AccordionsComponent},
-    {path: 'badges', component: BadgesComponent},
-    {path: 'progressbar', component: ProgressbarComponent},
-    {path: 'breadcrumbs', component: BreadcrumbsComponent},
-    {path: 'pagination', component: PaginationComponent},
-    {path: 'dropdowns', component: DropdownComponent},
-    {path: 'tooltips', component: TooltipsComponent},
-    {path: 'carousel', component: CarouselComponent},
-    {path: 'tabs', component: TabsComponent},
+    {path: '', redirectTo: '/app', pathMatch: 'full'},
+    {path: 'app', component: MainComponent, children: [
+        {
+            path: '',
+            component: DashboardComponent
+        },
+        {
+            path: 'dashboard',
+            data: {expectedRoles: ['ALL']},
+            canActivate: [AuthGuardService],
+            component: DashboardComponent
+        },
+        {path: 'forms', component: FormsComponent},
+        {path: 'buttons', component: ButtonsComponent},
+        {path: 'tables', component: TablesComponent},
+        {path: 'icons', component: IconsComponent},
+        {path: 'typography', component: TypographyComponent},
+        {path: 'alerts', component: AlertsComponent},
+        {path: 'accordions', component: AccordionsComponent},
+        {path: 'badges', component: BadgesComponent},
+        {path: 'progressbar', component: ProgressbarComponent},
+        {path: 'breadcrumbs', component: BreadcrumbsComponent},
+        {path: 'pagination', component: PaginationComponent},
+        {path: 'dropdowns', component: DropdownComponent},
+        {path: 'tooltips', component: TooltipsComponent},
+        {path: 'carousel', component: CarouselComponent},
+        {path: 'tabs', component: TabsComponent},
+        {
+            path: 'admin',
+            data: {expectedRoles: ['ADMIN']},
+            canActivate: [AuthGuardService],
+            loadChildren: './admin/admin.module#AdminModule'
+        }
+
+    ]},
     // App routes
     {
-        path: 'admin',
-        loadChildren: './admin/admin.module#AdminModule'
-    }
+        path: 'login',
+        component: LoginComponent
+    },
 ];
 
 @NgModule({
