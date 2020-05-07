@@ -172,7 +172,7 @@ export class ManageUsersComponent implements OnInit {
                     }
                 }
             }, (err) => {
-                if (err.code === 0) {
+                if (err.error.code === 0) {
                     Swal.fire({
                         icon: 'error',
                         position: 'top-end',
@@ -181,7 +181,7 @@ export class ManageUsersComponent implements OnInit {
                         showConfirmButton: false,
                         timer: 2000
                     });
-                } else if (err.code === 1) {
+                } else if (err.error.code === 1) {
                     Swal.fire({
                         icon: 'error',
                         position: 'top-end',
@@ -190,7 +190,7 @@ export class ManageUsersComponent implements OnInit {
                         showConfirmButton: false,
                         timer: 2000
                     });
-                } else if (err.code === 2) {
+                } else if (err.error.code === 2) {
                     Swal.fire({
                         icon: 'error',
                         position: 'top-end',
@@ -239,14 +239,25 @@ export class ManageUsersComponent implements OnInit {
                     });
                 }
             }, (err) => {
-                Swal.fire({
-                    icon: 'error',
-                    position: 'top-end',
-                    title: 'Oops...',
-                    text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
+                if (err.error.code === 2) {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Email invalide',
+                        text: 'Cet email existe déjà',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
             }, () => {
             }
         );
@@ -291,7 +302,7 @@ export class ManageUsersComponent implements OnInit {
     }
 
     resetPassword() {
-        this.userService.updateUser(this.editUser).subscribe(
+        this.userService.resetPassword(this.editUser.id).subscribe(
             (res: any) => {
                 if (res.success) {
                     this.editUser = {};
@@ -299,11 +310,11 @@ export class ManageUsersComponent implements OnInit {
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
-                        title: 'Mot de passe utilisateur mis à jour',
+                        title: 'Mot de passe utilisateur réinitialisé',
                         showConfirmButton: false,
                         timer: 2000
                     });
-                    $("#passwordResetModal").modal('hide');
+                    $("#resetPasswordModal").modal('hide');
                     this.confirmPassword = '';
                 } else {
                     Swal.fire({

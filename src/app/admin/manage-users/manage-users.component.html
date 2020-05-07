@@ -54,26 +54,6 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Login</label>
-                            <div class="col-sm-9">
-                                <input required name="login" [(ngModel)]="newUser.login" type="text"
-                                       class="form-control"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Mot de passe</label>
-                            <div class="col-sm-9">
-                                <input required name="password" [(ngModel)]="newUser.password" type="password"
-                                       class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Structure</label>
                             <div class="col-sm-9">
                                 <select name="structure_id" [(ngModel)]="newUser.structure_id" class="form-control">
@@ -138,7 +118,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let user of users | paginate: config | userFilter : searchUser; let i = index">
+                <tr *ngFor="let user of users | userFilter : searchUser | paginate: config; let i = index">
                     <td class="py-1">
                         <img src="assets/images/faces-clipart/pic-1.png" alt="image"/>
                     </td>
@@ -165,7 +145,7 @@
                                 <a class="dropdown-item" style="cursor: pointer" type="button"
                                    (click)="deleteUser = user.id" data-toggle="modal" data-target="#deleteUserModal">Supprimer</a>
                                 <a class="dropdown-item" style="cursor: pointer" type="button" (click)="editUser = user"
-                                   data-toggle="modal" data-target="#passwordResetModal" href="#">Reintialiser mot de
+                                   data-toggle="modal" data-target="#resetPasswordModal" href="#">Reintialiser mot de
                                     passe</a>
                             </div>
                         </div>
@@ -294,26 +274,6 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">Login</label>
-                                <div class="col-sm-9">
-                                    <input required name="login" [(ngModel)]="editUser.login" type="text"
-                                           class="form-control"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">Mot de passe</label>
-                                <div class="col-sm-9">
-                                    <input disabled name="password" type="password"
-                                           class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group row">
                                 <label class="col-sm-3 col-form-label">Structure</label>
                                 <div class="col-sm-9">
                                     <select name="structure_id" [(ngModel)]="editUser.structure_id"
@@ -367,7 +327,7 @@
                 <p>Êtes vous sûr de vouloir supprimer cet utilisateur ?</p>
                 <div class="pull-right">
                     <button type="button" (click)="deleteMyUser()" class="btn btn-danger mr-1">Supprimer</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                 </div>
             </div>
         </div>
@@ -376,44 +336,26 @@
 <!-- Delete User Modal end -->
 
 <!-- Reset password Modal start -->
-    <div *ngIf="editUser" class="modal fade" id="passwordResetModal" tabindex="-1" role="dialog" aria-labelledby="passwordResetModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Réinitialiser mot de passse</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body bg-white">
-                    <form #resetPasswordForm="ngForm">
-                        <div class="row mb-2">
-                            <label class="form-label">Entrez le nouveau mot de passe:</label>
-                            <div class="w-100">
-                                <input  required name="password" [(ngModel)]="editUser.password" type="password"
-                                       class="form-control"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label class="form-label">Confirmez mot de passe</label>
-                            <div class="w-100">
-                                <input  required name="passwordconfirm" [(ngModel)]="confirmPassword" type="password"
-                                       class="form-control"/>
-                                <span *ngIf="editUser.password != confirmPassword" class="text-danger">
-                                    Les mots de passe ne correpondent pas
-                                </span>
-                            </div>
-                        </div>
-                        <div class="mt-2 pull-right">
-                            <button type="button" [disabled]="!resetPasswordForm.form.valid || (editUser.password != confirmPassword)" (click)="resetPassword()" class="btn btn-primary mr-1">Enrégistrer</button>
-                            <button type="button" (click)="confirmPassword = ''" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        </div>
-                    </form>
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Réinitialiser mot de passe</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body bg-white">
+                <p>Confirmer réinitialisation du mot de passe</p>
+                <div class="pull-right">
+                    <button type="button" (click)="resetPassword()" class="btn btn-danger mr-1">Oui</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 <!-- Reset password Modal end -->
 
 <!-- Modals end -->

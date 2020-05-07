@@ -14,7 +14,7 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-success btn-block">Demande de titres
+        <button *ngIf="authUser.role.role === 'ADMIN' || authUser.role.role === 'STRUCTURE'" routerLink="/app/new_demande" class="btn btn-success btn-block">Demande de titres
           <i class="mdi mdi-plus"></i>
         </button>
       </div>
@@ -25,10 +25,16 @@
         <span class="menu-title">Dashboard</span>
       </a>
     </li>
-    <li class="nav-item">
+    <li *ngIf="authUser.role.role === 'ADMIN'" class="nav-item">
       <a class="nav-link" routerLink="/app/admin" routerLinkActive="active">
         <i class="menu-icon mdi mdi-notification-clear-all"></i>
         <span class="menu-title">ADMIN</span>
+      </a>
+    </li>
+    <li *ngIf="authUser.role.role === 'ADMIN' || authUser.role.role === 'STRUCTURE'" class="nav-item">
+      <a class="nav-link" routerLink="/app/new_demande" routerLinkActive="active">
+        <i class="menu-icon fa fa-briefcase"></i>
+        <span class="menu-title">Demnande de tittres</span>
       </a>
     </li>
     <!--<li class="nav-item">

@@ -20,6 +20,8 @@ import {TabsComponent} from './themes-component/tabs/tabs.component';
 import {LoginComponent} from "./login/login.component";
 import {MainComponent} from "./main/main.component";
 import {AuthGuardService} from "./services/auth/auth-guard.service";
+import {UserProfileComponent} from "./user-profile/user-profile.component";
+import {NewDemandeComponent} from "./new-demande/new-demande.component";
 
 const routes: Routes = [
     // Themes components routes
@@ -34,6 +36,18 @@ const routes: Routes = [
             data: {expectedRoles: ['ALL']},
             canActivate: [AuthGuardService],
             component: DashboardComponent
+        },
+        {
+            path: 'profile',
+            data: {expectedRoles: ['ALL']},
+            canActivate: [AuthGuardService],
+            component: UserProfileComponent
+        },
+        {
+            path: 'new_demande',
+            data: {expectedRoles: ['STRUCTURE', 'ADMIN']},
+            canActivate: [AuthGuardService],
+            component: NewDemandeComponent
         },
         {path: 'forms', component: FormsComponent},
         {path: 'buttons', component: ButtonsComponent},
@@ -62,7 +76,7 @@ const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent
-    },
+    }
 ];
 
 @NgModule({

@@ -1,45 +1,63 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {UserService} from "../services/user.service";
+import {Router} from "@angular/router";
+import {StructureService} from "../services/structure.service";
+import {RoleService} from "../services/role.service";
 
 import Swal from 'sweetalert2';
-import {User} from "../../classes/user";
-import {StructureService} from "../../services/structure.service";
-import {UserService} from "../../services/user.service";
-import {Structure} from "../../classes/structure";
 
 declare let $;
 
 @Component({
-  selector: 'app-manage-structures',
-  templateUrl: './manage-structures.component.html',
-  styleUrls: ['./manage-structures.component.scss']
+    selector: 'app-user-profile',
+    templateUrl: './user-profile.component.html',
+    styleUrls: ['./user-profile.component.scss']
 })
-export class ManageStructuresComponent implements OnInit {
-    newStructure: Structure = new Structure();
-    config: any;
+export class UserProfileComponent implements OnInit {
+    authUser: any;
+    updating = false;
     structures: any[];
-    searchStructure: any = '';
-    viewStructure: any;
-    editStructure: any;
-    deleteStructure: any;
+    roles: any[];
+    confirmPassword: '';
 
-    constructor(private structureService: StructureService, private userService: UserService) {
-        this.config = {
-            itemsPerPage: 25,
-            currentPage: 1,
-        };
+    constructor(private  userService: UserService, private  router: Router, private structureService: StructureService, private roleService: RoleService) {
     }
 
-  ngOnInit() {
-      this.fetchStructures();
-  }
+    ngOnInit() {
+        this.getAuthUser();
+        this.fetchStructures();
+        this.fetchRoles();
+    }
+
+    getAuthUser() {
+        this.userService.auth().subscribe((res: any) => {
+            if (res.success) {
+                this.authUser = res.data;
+            } else {
+                this.router.navigate(['login']);
+            }
+        }, (err) => {
+            this.router.navigate(['login']);
+        });
+    }
 
     fetchStructures() {
         this.structureService.getStructures().subscribe(
             (res: any) => {
-                this.config.totalItems = res.data.length;
-                this.structures = res.data;
-            }, (err: any) => {
-                console.log(err);
+                if (res.success) {
+                    this.structures = res.data;
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            },
+            (err) => {
                 Swal.fire({
                     icon: 'error',
                     position: 'top-end',
@@ -52,23 +70,102 @@ export class ManageStructuresComponent implements OnInit {
         );
     }
 
-    pageChanged(event) {
-        this.config.currentPage = event;
-    }
-
-    addStructure() {
-        this.structureService.addStructure(this.newStructure).subscribe(
+    fetchRoles() {
+        this.roleService.getRoles().subscribe(
             (res: any) => {
                 if (res.success) {
-                    this.newStructure = new Structure();
-                    //this.fetchStructures();
+                    this.roles = res.data;
+                } else {
                     Swal.fire({
+                        icon: 'error',
                         position: 'top-end',
-                        icon: 'success',
-                        title: 'Structure ajouté!',
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
                         showConfirmButton: false,
                         timer: 2000
                     });
+                }
+            },
+            (err) => {
+                Swal.fire({
+                    icon: 'error',
+                    position: 'top-end',
+                    title: 'Oops...',
+                    text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        );
+    }
+
+    updateUser() {
+        this.userService.updateUser(this.authUser).subscribe(
+            (res: any) => {
+                if (res.success) {
+                    this.getAuthUser();
+                    this.updating = false;
+                 Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Opération Réussie!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            }, (err) => {
+                if (err.error.code === 2) {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Email invalide',
+                        text: 'Cet email existe déjà',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        position: 'top-end',
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            }, () => {
+            }
+        );
+    }
+
+    cancelClicked() {
+        this.getAuthUser();
+    }
+
+    resetPassword() {
+        this.userService.updateUser(this.authUser).subscribe(
+            (res: any) => {
+                if (res.success) {
+                    this.authUser = {};
+                    this.getAuthUser();
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Mot de passe utilisateur mis à jour',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    $("#passwordResetModal").modal('hide');
+                    this.confirmPassword = '';
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -92,83 +189,5 @@ export class ManageStructuresComponent implements OnInit {
             }
         );
     }
-
-    updateStructure() {
-        this.structureService.updateStructure(this.editStructure).subscribe(
-            (res: any) => {
-                if (res.success) {
-                    this.editStructure = {};
-                    this.fetchStructures();
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Stucture mise à jour!',
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                    $("#editStructureModal").modal('hide');
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        position: 'top-end',
-                        title: 'Oops...',
-                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                }
-            }, (err) => {
-                Swal.fire({
-                    icon: 'error',
-                    position: 'top-end',
-                    title: 'Oops...',
-                    text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            }, () => {
-            }
-        );
-    }
-
-    deleteMyStructure() {
-        this.structureService.deleteStructure(this.deleteStructure).subscribe(
-            (res: any) => {
-                if (res.success) {
-                    this.deleteStructure = '';
-                    this.fetchStructures();
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Structure supprimée!',
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                    $("#deleteStructureModal").modal('hide');
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        position: 'top-end',
-                        title: 'Oops...',
-                        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                }
-            }, (err) => {
-                Swal.fire({
-                    icon: 'error',
-                    position: 'top-end',
-                    title: 'Oops...',
-                    text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            }, () => {
-            }
-        );
-    }
-
-
 
 }

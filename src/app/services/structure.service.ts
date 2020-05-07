@@ -16,10 +16,14 @@ export class StructureService {
     }
 
     addStructure(data) {
-        return this.httpService.post(environment.apiURL + 'structure    ', data);
+        return this.httpService.post(environment.apiURL + 'structure', data);
     }
 
     updateStructure(data) {
-        return this.httpService.put(environment.apiURL + 'structure    ', data);
+        return this.httpService.put(environment.apiURL + 'structure', data);
+    }
+
+    deleteStructure(id) {
+        return this.httpService.delete(environment.apiURL + 'structure/' + id);
     }
 }

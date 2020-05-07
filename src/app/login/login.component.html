@@ -11,7 +11,7 @@
 
       <!-- Login Form -->
       <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-        <input type="text" id="login" [(ngModel)]="login" class="fadeIn second" name="login" placeholder="login" required>
+        <input type="text" id="email" [(ngModel)]="email" class="fadeIn second" name="email" placeholder="Email" required>
         <input type="password" id="password" [(ngModel)]="password" class="fadeIn third" name="login" placeholder="Mot de passe" required>
         <input   type="submit" [disabled]="!loginForm.form.valid" class="fadeIn fourth" value="Se connecter">
 

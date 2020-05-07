@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 })
 export class LoginComponent implements OnInit {
 
-    private login: string;
+    private email: string;
     private password: string;
 
     constructor(private userService: UserService, private router: Router) {
@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     }
 
     onLogin() {
-        this.userService.login(this.login, this.password).subscribe(
+        this.userService.login(this.email, this.password).subscribe(
             (res) => {
                 if (res.success) {
                     Swal.fire({

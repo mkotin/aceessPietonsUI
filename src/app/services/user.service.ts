@@ -16,9 +16,9 @@ export class UserService {
         return this.httpService.post(environment.apiURL + 'register', user);
     }
 
-    login(login: string, password: string) {
+    login(email: string, password: string) {
         return this.httpService.post(environment.apiURL + 'authenticate', {
-            login,
+            email,
             password
         }).pipe(tap((res: any) => {
             if (res.success === true) {
@@ -27,6 +27,10 @@ export class UserService {
                 localStorage.setItem('access_token', res.api_key);
             }
         }));
+    }
+
+    resetPassword(id) {
+        return this.httpService.get(environment.apiURL + 'reset-password/' + id);
     }
 
     logout() {

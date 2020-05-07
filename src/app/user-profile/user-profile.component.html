@@ -1,0 +1,153 @@
+<div class="row">
+  <div class="col-3 mr-4">
+    <div class="card">
+      <div class="card-body text-center">
+          <img class="circle" src="assets/common/images/man.png" alt="profile image">
+        <div class="mt-2">
+          <span *ngIf="authUser">{{authUser.lname + ' ' + authUser.fname}}</span>
+        </div>
+        <div *ngIf="authUser" style="font-size: 14px; color: #00e4d0">
+          {{authUser.role.role}}
+        </div>
+        <button data-toggle="modal" data-target="#passwordResetModal" class="btn btn-primary px-2 w-100 py-3">Changer mot de passe</button>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <h4 class="mb-4">Informations de l'utilisateur</h4>
+          </div>
+          <div class="col text-right">
+            <button [disabled]="updating" (click)="updating = !updating;" class="btn btn-primary mr-2"><i class="fa fa-pencil"></i> Modifier</button>
+          </div>
+        </div>
+        <hr class="w-100"/>
+        <div class="row">
+          <div class="col">
+            <form *ngIf="authUser" #authUserForm="ngForm" (ngSubmit)="updateUser(authUser)" class="form-sample">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Nom</label>
+                    <div class="col-sm-9">
+                      <input [disabled]="!updating" required name="lname" [(ngModel)]="authUser.lname" type="text"
+                             class="form-control"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Prénoms</label>
+                    <div class="col-sm-9">
+                      <input [disabled]="!updating" required name="fname" [(ngModel)]="authUser.fname" type="text"
+                             class="form-control"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Email</label>
+                    <div class="col-sm-9">
+                      <input [disabled]="!updating" required name="email" [(ngModel)]="authUser.email" type="text"
+                             class="form-control"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Fonction</label>
+                    <div class="col-sm-9">
+                      <input [disabled]="!updating" required name="fonction" [(ngModel)]="authUser.fonction" class="form-control"
+                             type="text">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Structure</label>
+                    <div class="col-sm-9">
+                      <select disabled  name="structure_id" [(ngModel)]="authUser.structure_id"
+                              class="form-control">
+                        <ng-container *ngIf="structures">
+                          <option [value]="structure.id" *ngFor="let structure of structures">
+                            {{structure.nom}}
+                          </option>
+                        </ng-container>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Role</label>
+                    <div class="col-sm-9">
+                      <select disabled name="role_id" [(ngModel)]="authUser.role_id" class="form-control">
+                        <ng-container *ngIf="roles">
+                          <option [value]="role.id" *ngFor="let role of roles">{{role.role}}</option>
+                        </ng-container>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row pull-right">
+                <button [class.d-none]="!updating" (click)="cancelClicked();updating=false" type="button" data-dismiss="modal" class="btn btn-light mr-2">Annuler</button>
+                <button [class.d-none]="!updating" (click)="updateUser(authUser)" [disabled]="!authUserForm.form.valid" type="submit" class="btn btn-primary">Enregistrer
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reset password Modal start -->
+<div *ngIf="authUser" class="modal fade" id="passwordResetModal" tabindex="-1" role="dialog" aria-labelledby="passwordResetModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Réinitialiser mot de passse</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <form #resetPasswordForm="ngForm">
+          <div class="row mb-2">
+            <label class="form-label">Entrez le nouveau mot de passe:</label>
+            <div class="w-100">
+              <input  required name="password" [(ngModel)]="authUser.password" type="password"
+                      class="form-control"/>
+            </div>
+          </div>
+          <div class="row">
+            <label class="form-label">Confirmez mot de passe</label>
+            <div class="w-100">
+              <input  required name="passwordconfirm" [(ngModel)]="confirmPassword" type="password"
+                      class="form-control"/>
+              <span *ngIf="authUser.password != confirmPassword" class="text-danger">
+                                    Les mots de passe ne correpondent pas
+                                </span>
+            </div>
+          </div>
+          <div class="mt-2 pull-right">
+            <button type="button" [disabled]="!resetPasswordForm.form.valid || (authUser.password != confirmPassword)" (click)="resetPassword()" class="btn btn-primary mr-1">Enrégistrer</button>
+            <button type="button" (click)="confirmPassword = ''" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Reset password Modal end -->

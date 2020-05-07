@@ -31,6 +31,8 @@ import {NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule} from 
 import {NgxPaginationModule} from "ngx-pagination";
 import { LoginComponent } from './login/login.component';
 import { MainComponent } from './main/main.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { NewDemandeComponent } from './new-demande/new-demande.component';
 
 @NgModule({
     declarations: [
@@ -56,6 +58,8 @@ import { MainComponent } from './main/main.component';
         TabsComponent,
         LoginComponent,
         MainComponent,
+        UserProfileComponent,
+        NewDemandeComponent,
     ],
     imports: [
         HttpClientModule,
