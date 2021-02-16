@@ -1,0 +1,147 @@
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb breadcrumb-custom bg-inverse-primary">
+    <li class="breadcrumb-item"><a routerLink="/app/dashboard">Accueil</a></li>
+    <li class="breadcrumb-item active" aria-current="page">COS</li>
+  </ol>
+</nav>
+
+<div class="row w-100 mt-4">
+  <div class="col-9">
+        <h4 class="mb-4">Séance COS</h4>
+      </div>
+      <div class="col-3 text-right">
+        <button (click)="addNewCosMeeting()" class="btn btn-primary">Ajouter</button>
+      </div>
+</div>
+
+<div  class="card particular-card mt-4 d-none">
+  <div class="card-body">
+    <div class="row">
+      <div class="col h-100 d-flex justify-content-center align-items-center">
+        <p class="text-center">Aucune séance n'a été planifiée<br/>
+          <button onclick="addNewCosMeeting()" class="btn btn-primary mt-3">AJOUTER</button>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="newCOS" class="card particular-card mt-4 animate__animated animate__slideInDown">
+      <div class="card-body">
+        <form #newCOSForm="ngForm">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Objet</label>
+                <div class="col-sm-9">
+                  <input  name="objet" [(ngModel)]="newCOS.objet" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Date<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input id="txtDate" [min]="minDate" required name="date" [(ngModel)]="newCOS.date" class="form-control" type="date">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Lieu<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required placeholder="Lieu physique ou lien de vidéoconférence" name="lieu" [(ngModel)]="newCOS.lieu" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Heure<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input (input)="formatTime($event)" class="time" required name="heure" [(ngModel)]="newCOS.heure" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--<div class="row">
+            <div class="col text-left">
+              <div class="form-radio">
+                    <div class="form-check">
+                      <input (click)="sendInvitation=!sendInvitation"  [checked]="sendInvitation" type="checkbox" class="form-check-input" id="exampleCheck1">
+                      <label style="font-size: 12px;" class="form-check-label" for="exampleCheck1">Envoyer les invitations</label>
+                    </div>
+              </div>
+            </div>
+          </div>-->
+          <div class="row">
+            <div class="col text-center">
+              <button (click)="saveNewCos()" [disabled]="!newCOSForm.valid" class="btn btn-primary mr-3">Enregistrer</button>
+              <button (click)="cancelNewCos()" class="btn btn-secondary">Annuler</button>
+            </div>
+          </div>
+        </form>
+      </div>
+</div>
+
+<div *ngFor="let cos of allCos; let i = index" class="card particular-card mt-4 animate__animated animate__slideInDown">
+      <div style="padding-bottom: 0" class="card-body">
+        <div>
+          <div class="row">
+            <div class="col-9">
+              <h4>Séance COS no {{i+1}}</h4>
+            </div>
+            <div class="col-3 text-right">
+              <span *ngIf="getCosStatus(cos) == 'A venir'" class="badge badge-primary">{{getCosStatus(cos)}}</span>
+              <span *ngIf="getCosStatus(cos) == 'Aujourd\'hui'" class="badge badge-warning">{{getCosStatus(cos)}}</span>
+              <span *ngIf="getCosStatus(cos) == 'Terminée'" class="badge badge-danger">{{getCosStatus(cos)}}</span>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3">
+              <p>
+                <span style="font-weight: 500">Objet:</span><br/>
+                <span *ngIf="cos?.objet">{{cos?.objet}}</span>
+                <span *ngIf="!cos?.objet">Non défini</span>
+              </p>
+            </div>
+            <div class="col-3">
+              <p>
+                <span style="font-weight: 500">Date:</span><br/>
+                <span>{{cos?.date}}</span>
+              </p>
+            </div>
+            <div class="col-3">
+             <p>
+               <span style="font-weight: 500">Lieu:</span><br/>
+                <span>{{cos?.lieu}}</span>
+             </p>
+            </div>
+            <div class="col-3">
+              <p>
+                <span style="font-weight: 500">Heure:</span><br/>
+              <span>{{cos?.heure}}</span>
+              </p>
+            </div>
+          </div>
+         
+          <div class="row mt-2">
+            <div class="col text-right">
+              <div class="mb-3 row">
+                <div class="col text-right pr-0">
+                  <button onclick="$(this).parent().addClass('d-none').next().removeClass('d-none')"  class="btn btn-primary"><i class="fa-chevron-circle-left fa"></i> Actions</button>
+                </div>
+                <div class="d-none col pl-0 text-right animate__animated animate__slideInRight">
+                  <button onclick="$(this).parent().addClass('d-none').prev().removeClass('d-none')"  class="btn btn-primary mr-3"><i class="fa-chevron-circle-right fa"></i> Actions</button>
+                  <button (click)="replanCos()" class="mr-3 btn btn-primary mr-3">Demandes liées</button>
+                  <button (click)="replanCos()" class="mr-3 btn btn-primary mr-3">Replanifier</button>
+                  <button (click)="sendInvitationMail()" class="btn btn-primary mr-3">Envoyer les invitations</button>
+                  <button (click)="cancelCos()" class="btn btn-secondary">Annuler</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>

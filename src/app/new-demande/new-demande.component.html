@@ -1,0 +1,693 @@
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb breadcrumb-custom bg-inverse-primary">
+    <li class="breadcrumb-item"><a routerLink="/app/dashboard">Accueil</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><span>Nouvelle Demande</span></li>
+  </ol>
+</nav>
+<div class="row">
+  <div class="card w-100">
+    <div class="card-body">
+      <h4 class="mb-3">Demande de titres d'accès</h4>
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Objet<span class="text-danger">*</span></label>
+        <div class="col-sm-9">
+          <input required="" name="objet" [(ngModel)]="objet" class="form-control"
+                  type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Date de retrait souhaitée</label>
+        <div class="col-sm-9">
+          <input  name="retrait" [(ngModel)]="retrait" class="form-control"
+                  type="date">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Responsable<span class="text-danger">*</span></label>
+        <div class="col-sm-9">
+          <input required=""  name="responsable" [(ngModel)]="responsable" class="form-control"
+                  type="text">
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-8">
+          <h5>Usagers</h5>
+        </div>
+        <div class="col text-right">
+          <button data-toggle="modal"  data-target="#addUsagerModal" class="btn btn-primary mr-2">
+            <i class="fa fa-plus">
+            </i>
+            Ajouter
+          </button>
+          <button data-toggle="modal" data-target="#searchUsagerModal" class="btn btn-primary">
+            <i class="fa fa-search">
+            </i>
+            Existant
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>
+                Photo
+              </th>
+              <th>
+                Num Carte d'identité
+              </th>
+              <th>
+                Nom
+              </th>
+              <th>
+                Type accès
+              </th>
+              <th>
+                Temps accés
+              </th>
+              <th>
+                Actions
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let usager of usagers">
+              <td class="py-1">
+                <img [src]="usager.photo" alt="image"/>
+              </td>
+              <td>
+                {{usager.num_piece_identite}}
+              </td>
+              <td>
+                {{usager.nom + ' ' + usager.prenoms}}
+              </td>
+              <td>
+                {{usager.type_acces}}
+              </td>
+              <td>
+                {{usager.temps_acces}}
+              </td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-primary px-2 dropdown-toggle" type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                  </button>
+                  <div style="font-size: 14px;" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" style="cursor: pointer" type="button" (click)="viewingUsager = usager"
+                       data-toggle="modal" data-target="#viewingUsagerModal">Voir</a>
+                    <a class="dropdown-item" style="cursor: pointer" type="button" (click)="editingUsager = usager;editingIndex = usagers.indexOf(usager)"
+                       data-toggle="modal" data-target="#editUsagerModal">Modifier</a>
+                    <a class="dropdown-item" style="cursor: pointer" type="button"
+                       (click)="removeUsager(usagers.indexOf(usager))" >Retirer</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="mt-2  row pull-right">
+        <button (click)="makeDemande()" [disabled]="!objet && !responsable && (usagers.length === 0)" class="btn btn-primary">Soumettre</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals Start -->
+<!--Add Usager Modal start -->
+<div *ngIf="addingUsager" class="modal fade" id="addUsagerModal" tabindex="-1" role="dialog"
+     aria-labelledby="addUsagerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ajouter Usager</h5>
+        <button type="button" class="close"   data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <form #addingUsagerForm="ngForm"  class="form-sample">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Nom<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="nom" [(ngModel)]="addingUsager.nom" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Prénoms <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="prenoms" [(ngModel)]="addingUsager.prenoms" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Date de naissance</label>
+                <div class="col-sm-9">
+                  <input  name="date_naiss" [(ngModel)]="addingUsager.date_naiss" type="date"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Lieu de naissance</label>
+                <div class="col-sm-9">
+                  <input  name="lieu_naiss" [(ngModel)]="addingUsager.lieu_naiss" class="form-control"
+                         type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Nationalité <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="nationalite" [(ngModel)]="addingUsager.nationalite" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Adresse <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="adresse" [(ngModel)]="addingUsager.adresse" class="form-control"
+                         type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Téléphone</label>
+                <div class="col-sm-9">
+                  <input  name="telephone" [(ngModel)]="addingUsager.telephone" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Email</label>
+                <div class="col-sm-9">
+                  <input  name="email" [(ngModel)]="addingUsager.email" class="form-control"
+                         type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Fonction</label>
+                <div class="col-sm-9">
+                  <input  name="fonction" [(ngModel)]="addingUsager.fonction" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Num Pièce d'identité<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="num_piece_identite" [(ngModel)]="addingUsager.num_piece_identite" class="form-control"
+                         type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Num Carte Professionelle</label>
+                <div class="col-sm-9">
+                  <input  name="num_carte_professionelle" [(ngModel)]="addingUsager.num_carte_professionelle" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Num certificat de prise de service</label>
+                <div class="col-sm-9">
+                  <input  name="num_certificat_prise_service" [(ngModel)]="addingUsager.num_certificat_prise_service" class="form-control"
+                         type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Temps accès <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <select required name="temps_acces" [(ngModel)]="addingUsager.temps_acces"
+                          class="form-control">
+                    <option value="Temps 1">Temps 1</option>
+                    <option value="Temps 2">Temps 2</option>
+                    <option value="Temps 3">Temps 3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Type accès <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <select required name="type_acces" [(ngModel)]="addingUsager.type_acces" class="form-control">
+                    <option value="Temps 1">Temps 1</option>
+                    <option value="Temps 2">Temps 2</option>
+                    <option value="Temps 3">Temps 3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Type Badge<span class="text-danger">*</span></label>
+                <div  class="col-sm-9">
+                  <select *ngIf="badgeTypes" required name="type_badge" [(ngModel)]="addingUsager.badge_type_id"
+                          class="form-control">
+                    <option *ngFor="let badgeType of badgeTypes" [value]="badgeType.id">{{badgeType.libelle}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Zones<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <select *ngIf="zones" required name="zone" [(ngModel)]="addingUsager.zone_id" class="form-control">
+                    <option *ngFor="let zone of zones" [value]="zone.id">{{zone.libelle}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="col-sm-9">
+                  <div class="custom-file w-100">
+                    <input (change)="usagerPhotoSelected($event)" name="photo"  type="file" class="custom-file-input" id="validatedCustomFile" required>
+                    <label class="custom-file-label" for="validatedCustomFile">Photo <span class="text-danger">*</span></label>
+                    <div class="invalid-feedback">Photo invalid</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+         </div>
+          <div class="row pull-right">
+            <button type="button" data-dismiss="modal" class="btn btn-light mr-2">Fermer</button>
+            <button (click)="addUsager()" [disabled]="!addingUsagerForm.form.valid" type="submit" class="btn btn-primary">Ajouter
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Add Usager Modal end -->
+
+<!-- View usager details modals start-->
+<div *ngIf="viewingUsager" class="modal fade" id="viewingUsagerModal" tabindex="-1" role="dialog"
+     aria-labelledby="viewingUsagerModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Usgaer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <div class="row mb-2 text-center">
+          <img width="150" height="150" style="border-radius: 100%" [src]="viewingUsager.photo">
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Nom:</span>
+            <span>{{viewingUsager.nom}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Prénoms:</span>
+            <span>{{viewingUsager.prenoms}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Email:</span>
+            <span>{{viewingUsager.email}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Fonction:</span>
+            <span>{{viewingUsager.fonction}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Date de naissance:</span>
+            <span>{{viewingUsager.date_naiss}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Lieu de naissance:</span>
+            <span>{{viewingUsager.leiu_naiss}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Nationalité:</span>
+            <span>{{viewingUsager.nationalite}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Adresse:</span>
+            <span>{{viewingUsager.adresse}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Téléphone:</span>
+            <span>{{viewingUsager.telephone}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Num piéce d'identité:</span>
+            <span>{{viewingUsager.num_piece_identite}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Num carte professionelle:</span>
+            <span>{{viewingUsager.num_carte_professionelle}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Num certificat de prise de service:</span>
+            <span>{{viewingUsager.num_certificat_prise_service}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Temps accès:</span>
+            <span>{{viewingUsager.temps_acces}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Type accès:</span>
+            <span>{{viewingUsager.type_acces}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- View usager details modals end-->
+
+<!--Edit usager modal start -->
+<div *ngIf="editingUsager" class="modal fade" id="editUsagerModal" tabindex="-1" role="dialog"
+     aria-labelledby="editUsagerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUsagerModalLabel">Ajouter Usager</h5>
+        <button  [disabled]="!editingUsagerForm.form.valid" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <form #editingUsagerForm="ngForm"  class="form-sample">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Nom<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="nom" [(ngModel)]="editingUsager.nom" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Prénoms <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="prenoms" [(ngModel)]="editingUsager.prenoms" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Date de naissance</label>
+                <div class="col-sm-9">
+                  <input  name="date_naiss" [(ngModel)]="editingUsager.date_naiss" type="date"
+                          class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Lieu de naissance</label>
+                <div class="col-sm-9">
+                  <input  name="lieu_naiss" [(ngModel)]="editingUsager.lieu_naiss" class="form-control"
+                          type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Nationalité <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="nationalite" [(ngModel)]="editingUsager.nationalite" type="text"
+                         class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Adresse <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="adresse" [(ngModel)]="editingUsager.adresse" class="form-control"
+                         type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Téléphone</label>
+                <div class="col-sm-9">
+                  <input  name="telephone" [(ngModel)]="editingUsager.telephone" type="text"
+                          class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Email</label>
+                <div class="col-sm-9">
+                  <input  name="email" [(ngModel)]="editingUsager.email" class="form-control"
+                          type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Fonction</label>
+                <div class="col-sm-9">
+                  <input  name="fonction" [(ngModel)]="editingUsager.fonction" type="text"
+                          class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Num Pièce d'identité<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <input required name="num_piece_identite" [(ngModel)]="editingUsager.num_piece_identite" class="form-control"
+                         type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Num Carte Professionelle</label>
+                <div class="col-sm-9">
+                  <input  name="num_carte_professionelle" [(ngModel)]="editingUsager.num_carte_professionelle" type="text"
+                          class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Num certificat de prise de service</label>
+                <div class="col-sm-9">
+                  <input  name="num_certificat_prise_service" [(ngModel)]="editingUsager.num_certificat_prise_service" class="form-control"
+                          type="text">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Type accès <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <select required name="temps_acces" [(ngModel)]="editingUsager.temps_acces"
+                          class="form-control">
+                    <option value="Temps 1">Temps 1</option>
+                    <option value="Temps 2">Temps 2</option>
+                    <option value="Temps 3">Temps 3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Type accès <span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <select required name="type_acces" [(ngModel)]="editingUsager.type_acces" class="form-control">
+                    <option value="Temps 1">Temps 1</option>
+                    <option value="Temps 2">Temps 2</option>
+                    <option value="Temps 3">Temps 3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Type Badge<span class="text-danger">*</span></label>
+                <div  class="col-sm-9">
+                  <select *ngIf="badgeTypes" required name="type_badge" [(ngModel)]="editingUsager.badge_type_id"
+                          class="form-control">
+                    <option *ngFor="let badgeType of badgeTypes" [value]="badgeType.id">{{badgeType.libelle}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Zones<span class="text-danger">*</span></label>
+                <div class="col-sm-9">
+                  <select *ngIf="zones" required name="zone" [(ngModel)]="editingUsager.zone_id" class="form-control">
+                    <option *ngFor="let zone of zones" [value]="zone.id">{{zone.libelle}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="col-sm-9">
+                  <div class="custom-file w-100">
+                    <input (change)="usagerPhotoSelected($event)" name="photo"  type="file" class="custom-file-input" id="validatedCustomFileB" required>
+                    <label class="custom-file-label" for="validatedCustomFileB">Photo <span class="text-danger">*</span></label>
+                    <div class="invalid-feedback">Photo invalid</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row pull-right">
+            <button type="button" data-dismiss="modal" class="btn btn-light mr-2">Fermer</button>
+            <button (click)="updateUsager()" [disabled]="!editingUsagerForm.form.valid" type="submit" class="btn btn-primary">Modifier
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Edit usager modal start -->
+
+<!--Search Usager Modal start -->
+<div  class="modal fade" id="searchUsagerModal" tabindex="-1" role="dialog"
+     aria-labelledby="searchUsagerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >Rechercher Usager</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <div class="row">
+          <div class="col">
+            <input name="searchingUsager" [(ngModel)]="searchingUsager" type="text" class="form-control"
+            placeholder="Rechercher nom, prenoms, num pièce, email, téléphone">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>
+                  Photo
+                </th>
+                <th>
+                  Num Carte d'identité
+                </th>
+                <th>
+                  Nom
+                </th>
+                <th>
+                  Type accès
+                </th>
+                <th>
+                  Temps accés
+                </th>
+
+              </tr>
+              </thead>
+              <tbody>
+              <tr style="cursor: pointer;" *ngFor="let usager of oldUsagers | usagerSearch: searchingUsager : existingUsagersIds " (click)="addExistingUsager(usager)">
+                <td class="py-1">
+                  <img [src]="usager.photo" alt="image"/>
+                </td>
+                <td>
+                  {{usager.num_piece_identite}}
+                </td>
+                <td>
+                  {{usager.nom + ' ' + usager.prenoms}}
+                </td>
+                <td>
+                  {{usager.type_acces}}
+                </td>
+                <td>
+                  {{usager.temps_acces}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Search Usager Modal end -->
+
+<!-- Modals Start -->

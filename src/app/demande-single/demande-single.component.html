@@ -1,0 +1,343 @@
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb breadcrumb-custom bg-inverse-primary">
+        <li class="breadcrumb-item"><a routerLink="/app/dashboard">Accueil</a></li>
+        <li class="breadcrumb-item"><a routerLink="/app/demandes">Liste des Demandes</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><span>{{demande?.ref}}</span></li>
+    </ol>
+</nav>
+
+<div class="w-100 mt-4">
+	<h4 style="font-weight: 500">Demande {{demande?.ref}}</h4>
+</div>
+
+<div class="card w-100 mt-4" >
+  <div class="card-body">
+    <h4 class="mb-4">Details</h4>
+    <div class="row">
+    	<div class="col-3">
+    		<p>
+    			<span style="font-weight: 500">Structure: </span><br/><span>{{demande?.structure.nom}}</span>
+    		</p>
+      </div>
+      <div class="col-3">
+    		<p>
+    			<span style="font-weight: 500">Objet: </span><br/><span>{{demande?.objet_demande}}</span>
+    		</p>
+    	</div>
+    	<div class="col-3">
+    		<p>
+    			<span style="font-weight: 500">Date de soumission: </span><br/><span>{{demande?.date_soumission}}</span>
+    		</p>
+    	</div>
+    	<div class="col-3">
+    		<p>
+    			<span style="font-weight: 500">Statut: </span><br/>
+    			<span *ngIf="demande?.statut == 'EN_INSTANCE'" class="badge badge-primary">{{demande?.statut.replace('_', ' ').toUpperCase()}}</span>
+    			<span *ngIf="demande?.statut == 'cos'" class="badge badge-warning">{{demande?.statut.replace('_', ' ').toUpperCase()}}</span>
+    			<span *ngIf="demande?.statut == 'valide'" class="badge badge-success">{{demande?.statut.replace('_', ' ').toUpperCase()}}</span>
+    			<span *ngIf="demande?.statut == 'rejete'" class="badge badge-danger">{{demande?.statut.replace('_', ' ').toUpperCase()}}</span>
+    		</p>
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-3">
+    		<p>
+    			<span style="font-weight: 500">Responsable: </span><br/><span>{{demande?.responsable}}</span>
+    		</p>
+    	</div>
+    	<div class="col-3">
+    		<p>
+    			<span style="font-weight: 500">Date de retrait: </span><br/><span>{{demande?.date_retrait}}</span>
+    		</p>
+    	</div>
+    	<div class="col-3">
+    		<p>
+    			<span style="font-weight: 500">Montant: </span><br/><span>{{demande?.montant}}</span>
+    		</p>
+      </div>
+      <div *ngIf="showAffecter" class="col-3 pt-2">
+    		<u (click)="affecterDemande()" class="text-primary"><span type="button" class="text-primary">Affecter <i class="fa fa-arrow-right"></i></span></u>
+    	</div>
+    </div>
+  </div>
+</div>
+
+<div class="card w-100 mt-4">
+	<div class="card-body">
+		 <ngb-tabset class="tab-basic">
+          <ngb-tab title="Usagers">
+            <ng-template ngbTabContent>
+              <div class="row">
+        <div class="col">
+        <h5>Usagers</h5>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>
+                Photo
+              </th>
+              <th>
+                Num Carte d'identité
+              </th>
+              <th>
+                Nom
+              </th>
+              <th>
+                Type accès
+              </th>
+              <th>
+                Temps accés
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="cursor: pointer;" (click)="viewUsager(usager)" *ngFor="let usager of demande?.usagers">
+              <td class="py-1">
+                <img [src]="usager.photo" alt="image"/>
+              </td>
+              <td>
+                {{usager.num_piece_identite}}
+              </td>
+              <td>
+                {{usager.nom + ' ' + usager.prenoms}}
+              </td>
+              <td>
+                {{usager.type_acces}}
+              </td>
+              <td>
+                {{usager.temps_acces}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="COS">
+            <ng-template ngbTabContent>
+              <div class="row">
+              	<div class="col">
+              		<h5>COS</h5>
+              	</div>
+               </div>
+               <div *ngIf="!demande?.seance_cos_id" class="row">
+              	<div class="col h-100 d-flex justify-content-center align-items-center">
+              		<p class="text-center">Aucune séance n'a été planifiée pour cette demande <br/>
+              			<button data-toggle="modal" data-target="#chooseCOSModal" class="btn btn-primary mt-3">Planifier</button>
+              		</p>
+              	</div>
+               </div>
+               <div *ngIf="demande?.seance_cos_id">
+                  <div style="padding-bottom: 0" class="card-body">
+                    <div>
+                      <div class="row">
+                        <div class="col-9">
+                          <h4>Séance COS no {{cos.numero_seance}}</h4>
+                        </div>
+                        <div class="col-3 text-right">
+                          <span *ngIf="getCosStatus(cos) == 'A venir'" class="badge badge-primary">{{getCosStatus(cos)}}</span>
+                          <span *ngIf="getCosStatus(cos) == 'Aujourd\'hui'" class="badge badge-warning">{{getCosStatus(cos)}}</span>
+                          <span *ngIf="getCosStatus(cos) == 'Terminée'" class="badge badge-danger">{{getCosStatus(cos)}}</span>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="col-3">
+                          <p>
+                            <span style="font-weight: 500">Objet:</span><br/>
+                            <span *ngIf="cos?.objet">{{cos?.objet}}</span>
+                            <span *ngIf="!cos?.objet">Non défini</span>
+                          </p>
+                        </div>
+                        <div class="col-3">
+                          <p>
+                            <span style="font-weight: 500">Date:</span><br/>
+                            <span>{{cos?.date}}</span>
+                          </p>
+                        </div>
+                        <div class="col-3">
+                         <p>
+                           <span style="font-weight: 500">Lieu:</span><br/>
+                            <span>{{cos?.lieu}}</span>
+                         </p>
+                        </div>
+                        <div class="col-3">
+                          <p>
+                            <span style="font-weight: 500">Heure:</span><br/>
+                          <span>{{cos?.heure}}</span>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="col text-right">
+                          <button class="btn btn-primary">Retirer</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="Rapport">
+            <ng-template ngbTabContent>
+              <div class="row">
+              </div>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+	</div>
+</div>
+
+<!-- View usager details modals start-->
+<div *ngIf="viewingUsager" class="modal fade" id="viewingUsagerModal" tabindex="-1" role="dialog"
+     aria-labelledby="viewingUsagerModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Usgaer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <div class="row mb-2 text-center">
+          <img width="150" height="150" style="border-radius: 100%" [src]="viewingUsager?.photo">
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Nom:</span>
+            <span>{{viewingUsager?.nom}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Prénoms:</span>
+            <span>{{viewingUsager?.prenoms}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Email:</span>
+            <span>{{viewingUsager?.email}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Fonction:</span>
+            <span>{{viewingUsager?.fonction}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Date de naissance:</span>
+            <span>{{viewingUsager?.date_naiss}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Lieu de naissance:</span>
+            <span>{{viewingUsager?.leiu_naiss}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Nationalité:</span>
+            <span>{{viewingUsager?.nationalite}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Adresse:</span>
+            <span>{{viewingUsager?.adresse}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Téléphone:</span>
+            <span>{{viewingUsager?.telephone}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Num piéce d'identité:</span>
+            <span>{{viewingUsager?.num_piece_identite}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Num carte professionelle:</span>
+            <span>{{viewingUsager?.num_carte_professionelle}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Num certificat de prise de service:</span>
+            <span>{{viewingUsager?.num_certificat_prise_service}}</span>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <span class="mr-1">Temps accès:</span>
+            <span>{{viewingUsager?.temps_acces}}</span>
+          </div>
+          <div class="col-md-6">
+            <span class="mr-1">Type accès:</span>
+            <span>{{viewingUsager?.type_acces}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- View usager details modals end-->
+
+<!-- Choose COS modal start-->
+<div class="modal fade" id="chooseCOSModal" tabindex="-1" role="dialog"
+     aria-labelledby="chooseCOSModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Choisir séance COS</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white">
+        <div (click)="linkCOS(cos)" style="cursor: pointer;" *ngFor="let cos of allCos; let i = index" class="card particular-card mb-4 animate__animated animate__slideInDown">
+      <div style="padding-bottom: 0" class="card-body">
+        <div>
+          <div class="row">
+            <div class="col-9">
+              <h4>Séance COS no {{i+1}}</h4>
+            </div>
+            <div class="col-3 text-right">
+              <span *ngIf="getCosStatus(cos) == 'A venir'" class="badge badge-primary">{{getCosStatus(cos)}}</span>
+              <span *ngIf="getCosStatus(cos) == 'Aujourd\'hui'" class="badge badge-warning">{{getCosStatus(cos)}}</span>
+              <span *ngIf="getCosStatus(cos) == 'Terminée'" class="badge badge-danger">{{getCosStatus(cos)}}</span>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3">
+              <p>
+                <span style="font-weight: 500">Objet:</span><br/>
+                <span *ngIf="cos?.objet">{{cos?.objet}}</span>
+                <span *ngIf="!cos?.objet">Non défini</span>
+              </p>
+            </div>
+            <div class="col-3">
+              <p>
+                <span style="font-weight: 500">Date:</span><br/>
+                <span>{{cos?.date}}</span>
+              </p>
+            </div>
+            <div class="col-3">
+             <p>
+               <span style="font-weight: 500">Lieu:</span><br/>
+                <span>{{cos?.lieu}}</span>
+             </p>
+            </div>
+            <div class="col-3">
+              <p>
+                <span style="font-weight: 500">Heure:</span><br/>
+              <span>{{cos?.heure}}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Choose COS modal start-->

@@ -1,0 +1,20 @@
+.badge-outline {
+    color: black
+    border 1px solid #999;
+    background-color: transparent;
+}
+
+.badge-outline.badge-success{
+    border-color: #468847;
+    color: #468847;
+}
+
+.badge-outline.badge-secondary{
+    border-color: #e5e5e5;
+    color: #e5e5e5;
+}
+
+.badge-outline.badge-warning{
+    border-color: #ffaf00;
+    color: #ffaf00;
+}
