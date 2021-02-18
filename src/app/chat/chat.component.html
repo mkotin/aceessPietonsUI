@@ -1,0 +1,94 @@
+<div style="padding: 0;" class="container clearfix">
+  
+  <div class="chat">
+    <div class="chat-header clearfix d-none">
+      <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01_green.jpg" alt="avatar" />
+      
+      <div class="chat-about d-none">
+        <div class="chat-with">Chat with Vincent Porter</div>
+        <div class="chat-num-messages">already 1 902 messages</div>
+      </div>
+      <i class="fa fa-star"></i>
+    </div> <!-- end chat-header -->
+    
+    <div id="chatHistory" class="chat-history">
+      <ul>
+        <li class="d-none">
+          <div class="message-data">
+            <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+            <span class="message-data-time">10:31 AM, Today</span>
+          </div>
+          <i class="fa fa-circle online"></i>
+          <i class="fa fa-circle online" style="color: #AED2A6"></i>
+          <i class="fa fa-circle online" style="color:#DAE9DA"></i>
+        </li>
+
+        <ng-container *ngFor="let message of allMessages">
+          <li *ngIf="message.user_id != authUser.id" class="clearfix">
+            <div class="message-data">
+              <span class="message-data-name"><i class="fa fa-circle online"></i> {{message.user.fname}}</span>
+              <span *ngIf="isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "shortTime"}}</span>
+              <span *ngIf="isDateInThisWeek(message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "E, H:mm"}}</span>
+              <span *ngIf="!isDateInThisWeek(message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "d MMM, y, H:mm"}}</span> 
+            </div>
+            <div class="message my-message" style="float:left">
+              {{message.message}}
+            </div>
+          </li>
+          <li *ngIf="message.user_id == authUser.id" class="clearfix">
+            <div class="message-data align-right">
+              <span *ngIf="isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "H:mm"}}</span>
+              <span *ngIf="isDateInThisWeek(message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "E, H:mm"}}</span>
+              <span *ngIf="!isDateInThisWeek(message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "d MMM, y, H:mm"}}</span> 
+              &nbsp;<span class="message-data-name" >{{message.user.fname}} <i class="fa fa-circle me"></i></span>
+             
+            </div>
+            <div class="message other-message" style="float:right">
+              {{message.message}}
+            </div>
+          </li>
+        </ng-container>
+
+        <ng-container *ngFor="let message of newMessages">
+          <li *ngIf="message.user.id != authUser.id" class="clearfix">
+            <div class="message-data">
+              <span class="message-data-name"><i class="fa fa-circle online"></i> {{message.user.fname}}</span> 
+              <span *ngIf="isToday(message.message.created_at)" class="message-data-time">{{message.message.created_at | date : "shortTime"}}</span>
+              <span *ngIf="isDateInThisWeek(message.message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.message.created_at | date : "E, H:mm"}}</span>
+              <span *ngIf="!isDateInThisWeek(message.message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.message.created_at | date : "d MMM, y, H:mm"}}</span>
+              
+            </div>
+            <div class="message my-message" style="float:left">
+              {{message.message.message}}
+            </div>
+          </li>
+          <li *ngIf="message.user.id == authUser.id" class="clearfix">
+            <div class="message-data align-right">
+              <span *ngIf="isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "H:mm"}}</span>
+              <span *ngIf="isDateInThisWeek(message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "E, H:mm"}}</span>
+              <span *ngIf="!isDateInThisWeek(message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "d MMM, y, H:mm"}}</span>
+              &nbsp;<span class="message-data-name" >{{message.user.fname}} <i class="fa fa-circle me"></i></span>
+              
+            </div>
+            <div class="message other-message" style="float:right">
+              {{message.message}}
+            </div>
+          </li>
+        </ng-container>
+        
+      </ul>
+    </div> <!-- end chat-history -->
+    
+    <form (ngSubmit)="postMessage()" class="chat-message clearfix">
+      <textarea id="area" (keypress)="preventNewLine($event)" style="height: 86px;" [(ngModel)]="message" name="chat-message-to-send" placeholder ="Envoyer"></textarea>
+              
+      <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
+      <i class="fa fa-file-image-o"></i>
+      
+      <button type="submit">Envoyer</button>
+
+    </form> <!-- end chat-message -->
+    
+  </div> <!-- end chat -->
+  
+</div> <!-- end container -->

@@ -25,12 +25,15 @@
 }
 
 .tab-content {
-	padding: 37px 18px 29px 24px;
+	//padding: 37px 18px 29px 24px;
 	font-family: $type-1;
 	font-size: $default-font-size;
 	line-height: 1.71;
 	border: $border-width solid $border-color;
 	@include border-radius(2px);
+}
+.tab-content .row {
+    padding: 37px 18px 29px 24px;
 }
 // Basic Tab Styles
 .tab-basic {

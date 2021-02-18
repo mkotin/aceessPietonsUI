@@ -38,6 +38,7 @@ import { ListDemandesComponent } from './list-demandes/list-demandes.component';
 import { DemandeSearchPipe } from './pipes/demande-search.pipe';
 import { DemandeSingleComponent } from './demande-single/demande-single.component';
 import { CosComponent } from './cos/cos.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
     declarations: [
@@ -70,6 +71,7 @@ import { CosComponent } from './cos/cos.component';
         DemandeSearchPipe,
         DemandeSingleComponent,
         CosComponent,
+        ChatComponent,
     ],
     imports: [
         HttpClientModule,

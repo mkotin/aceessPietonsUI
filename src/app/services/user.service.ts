@@ -25,6 +25,7 @@ export class UserService {
                 // Authentication succeed...
                 // store the access token and user details to local storage
                 localStorage.setItem('access_token', res.api_key);
+                localStorage.setItem('user_id', res.user.id);
             }
         }));
     }
