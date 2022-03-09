@@ -25,4 +25,20 @@ export class DemandeServiceService {
   affecterDemande(id) {
   	return this.httpService.get(environment.apiURL + 'affecterDemande/' + id);
   }
+
+  verifierDemande(id) {
+  	return this.httpService.get(environment.apiURL + 'verifierDemande/' + id);
+  }
+
+  getJournalDemande(id) {
+    return this.httpService.get(environment.apiURL + 'journalDemande/' + id);
+  }
+
+  prononcerVerdict(body) {
+    return this.httpService.post(environment.apiURL + 'verdictDemande', body);
+  }
+
+  submitStructureReport(body) {
+    return this.httpService.post(environment.apiURL + 'submitStructureDemandeReport', body);
+  }
 }

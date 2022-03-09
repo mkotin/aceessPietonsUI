@@ -34,11 +34,12 @@
           <span style="font-weight: 500">Statut: </span><br />
           <span *ngIf="demande?.statut == 'EN_INSTANCE'" class="badge badge-primary">{{demande?.statut.replace('_', '
             ').toUpperCase()}}</span>
-          <span *ngIf="demande?.statut == 'cos'" class="badge badge-warning">{{demande?.statut.replace('_', '
+          <span *ngIf="demande?.statut == 'COS'" class="badge badge-warning">{{demande?.statut.replace('_', '
             ').toUpperCase()}}</span>
-          <span *ngIf="demande?.statut == 'valide'" class="badge badge-success">{{demande?.statut.replace('_', '
+          <span *ngIf="demande?.statut == 'VALIDEE'" class="badge badge-success">{{demande?.statut.replace('_', '
             ').toUpperCase()}}</span>
-          <span *ngIf="demande?.statut == 'rejete'" class="badge badge-danger">{{demande?.statut.replace('_', '
+          <span *ngIf="demande?.statut == 'EN_ATTENTE_DU_RAPPORT_STRUCTURE'" class="badge badge-success">VALIDEE</span>
+          <span *ngIf="demande?.statut == 'REJETEE'" class="badge badge-danger">{{demande?.statut.replace('_', '
             ').toUpperCase()}}</span>
         </p>
       </div>
@@ -56,7 +57,7 @@
       </div>
       <div class="col-3">
         <p>
-          <span style="font-weight: 500">Montant: </span><br /><span>{{demande?.montant}}</span>
+          <span style="font-weight: 500">Montant Initial: </span><br /><span>{{demande?.montant}}</span>
         </p>
       </div>
       <div *ngIf="showAffecter" class="col-3 pt-2">
@@ -69,12 +70,12 @@
 
 <div class="card w-100 mt-4">
   <div class="card-body">
-    <ngb-tabset class="tab-basic">
+    <ngb-tabset (tabChange)="choosedUsagers = []" class="tab-basic">
       <ngb-tab title="Usagers">
         <ng-template ngbTabContent>
           <div class="row">
             <div class="col">
-              <h5>Usagers</h5>
+              <h5>Usagers ({{demande?.usagers?.length}})</h5>
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -115,12 +116,22 @@
                   </tr>
                 </tbody>
               </table>
+              <div class="row">
+                <div class="col">
+                  <span class="mr-2" style="font-size: 15px; font-weight: 400;">Vérifiée</span>
+                  <label class="switch">
+                    <input [disabled]="authUser?.role?.role == 'STRUCTURE' || authUser?.role?.role == 'CAISSE' || demande?.nbre_usagers_accepte"
+                      (click)="verifierDemande()" [checked]="demande?.verifiee" type="checkbox">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </ng-template>
       </ngb-tab>
-      <ngb-tab title="COS">
-        <ng-template ngbTabContent>
+      <ngb-tab *ngIf="authUser?.role?.role != 'STRUCTURE'" title="COS">
+        <ng-template *ngIf="demande?.verifiee" ngbTabContent>
           <div class="row">
             <div class="col">
               <h5>COS</h5>
@@ -139,7 +150,7 @@
               <div>
                 <div class="row">
                   <div class="col-9">
-                    <h4>Séance COS no {{cos.numero_seance}}</h4>
+                    <h4><u>Séance COS no {{cos.numero_seance}}</u></h4>
                   </div>
                   <div class="col-3 text-right">
                     <span *ngIf="getCosStatus(cos) == 'A venir'"
@@ -186,21 +197,197 @@
             </div>
           </div>
         </ng-template>
+        <ng-template *ngIf="!demande?.verifiee" ngbTabContent>
+          <div class="row">
+            <div class="col">
+              <p>Cette demande n'est pas encore vérifiée.</p>
+            </div>
+          </div>
+        </ng-template>
       </ngb-tab>
       <ngb-tab title="Forum">
         <ng-template ngbTabContent>
           <app-chat demandeId="022"></app-chat>
         </ng-template>
       </ngb-tab>
-      <ngb-tab title="Rapport">
-        <ng-template ngbTabContent>
-          <div class="row">
-          </div>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <div>Rapport</div>
+        </ng-template>
+
+        <ng-template *ngIf="demande?.verifiee" ngbTabContent>
+         <div class="row">
+           <div class="col">
+            <ng-container *ngIf="authUser?.role?.role == 'STRUCTURE' ">
+              <ng-container
+                *ngIf="demande?.nbre_usagers_accepte && demande?.nbre_usagers_accepte > 0  && demande?.statut == 'EN_ATTENTE_DU_RAPPORT_STRUCTURE'">
+                <div class="row">
+                  <div class="col">
+                    <p>
+                      Votre demande a été validée avec <b>{{ demande?.nbre_usagers_accepte }} badges acceptées</b> sur
+                      {{demande?.usagers?.length}}.
+                      Veuillez choisir les béneficiaires dans la liste ci-dessous:</p>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>
+                            #
+                          </th>
+                          <th>
+                            Photo
+                          </th>
+                          <th>
+                            Num Carte d'identité
+                          </th>
+                          <th>
+                            Nom
+                          </th>
+                          <th>
+                            Type accès
+                          </th>
+                          <th>
+                            Temps accés
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr style="cursor: pointer;" *ngFor="let usager of demande?.usagers">
+                          <td>
+                            <input style="height: 15px;" (click)="chooseUsager(usager.id)" type="checkbox"
+                              class="form-control" />
+                          </td>
+                          <td (click)="viewUsager(usager)" class="py-1">
+                            <img [src]="usager.photo" alt="image" />
+                          </td>
+                          <td (click)="viewUsager(usager)">
+                            {{usager.num_piece_identite}}
+                          </td>
+                          <td (click)="viewUsager(usager)">
+                            {{usager.nom + ' ' + usager.prenoms}}
+                          </td>
+                          <td (click)="viewUsager(usager)">
+                            {{usager.type_acces}}
+                          </td>
+                          <td (click)="viewUsager(usager)">
+                            {{usager.temps_acces}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p class="d-flex justify-content-center mt-2">
+                      <button (click)="submitStructureReport()" class="btn btn-primary">Soumettre</button>
+                    </p>
+                  </div>
+                </div>
+  
+              </ng-container>
+              <ng-container *ngIf="demande?.nbre_usagers_accepte && demande?.nbre_usagers_accepte == 0">
+                <div class="row">
+                  <div class="col">
+                    <p>Votre demande n'a pas été acceptée.</p>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="!demande?.nbre_usagers_accepte">
+                <div class="row">
+                  <div class="col">
+                    <p>Votre demande est en cours de tratitement. Veuillez consulter régulièrement cette page
+                      pour vérifier l'état d'avancement de votre demande.</p>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+  
+            <ng-container *ngIf="demande?.nbre_usagers_accepte && demande?.nbre_usagers_accepte > 0  && demande?.statut != 'EN_ATTENTE_DU_RAPPORT_STRUCTURE'">
+              <p>
+                <b>Nombre de badges demandés: </b>{{demande?.usagers.length}}<br />
+                <b>Nombre de badges acceptés: </b>{{demande?.usagers.length}}<br />
+                <b>Montant final accepté: </b>{{demande?.montant_accepte}}<br />
+              </p>
+              <h5>Usagers acceptés</h5>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>
+                      Photo
+                    </th>
+                    <th>
+                      Num Carte d'identité
+                    </th>
+                    <th>
+                      Nom
+                    </th>
+                    <th>
+                      Type accès
+                    </th>
+                    <th>
+                      Temps accés
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let usager of demande?.usagers">
+                    <tr *ngIf="usager.pivot.autorise" style="cursor: pointer;">
+                      <td (click)="viewUsager(usager)" class="py-1">
+                        <img [src]="usager.photo" alt="image" />
+                      </td>
+                      <td (click)="viewUsager(usager)">
+                        {{usager.num_piece_identite}}
+                      </td>
+                      <td (click)="viewUsager(usager)">
+                        {{usager.nom + ' ' + usager.prenoms}}
+                      </td>
+                      <td (click)="viewUsager(usager)">
+                        {{usager.type_acces}}
+                      </td>
+                      <td (click)="viewUsager(usager)">
+                        {{usager.temps_acces}}
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </ng-container>
+  
+            <div *ngIf="authUser?.role?.role != 'STRUCTURE' && demande?.statut == 'EN_ATTENTE_DU_RAPPORT_STRUCTURE'">
+              <p>
+                <b>Nombre de badges demandés: </b>{{demande?.usagers.length}}<br/>
+                <b>Nombre de badges acceptés: </b>{{demande?.nbre_usagers_accepte}}<br/>
+              </p>
+              <p>En attente du rapport de la structure.</p>
+            </div>
+           </div>
+         </div>
+        </ng-template>
+        <ng-template *ngIf=" !demande?.verifiee" ngbTabContent>
+            <div class="row">
+              <div class="col">
+                <p>Cette demande n'est pas encore vérifiée.</p>
+              </div>
+            </div>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
   </div>
 </div>
+
+<div *ngIf="authUser?.role?.role != 'STRUCTURE'" class="card w-100 mt-4">
+  <div class="card-body">
+    <h4 class="mb-4">Journal</h4>
+    <table class="table">
+      <tr *ngFor="let row of journal | slice:0:maxRowJournal; let i=index">
+        <td style="font-weight: bold;">{{ row.created_at | date : "d MMM, y, H:mm" }}</td>
+        <td>{{ row.description }}</td>
+      </tr>
+    </table>
+    <div class="row">
+      <div class="col text-center">
+        <u class="text-primary" style="cursor: pointer;" (click)="showMoreJournal()">Afficher plus</u>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- View usager details modals start-->
 <div *ngIf="viewingUsager" class="modal fade" id="viewingUsagerModal" tabindex="-1" role="dialog"

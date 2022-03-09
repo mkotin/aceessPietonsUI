@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { Message } from '../classes/Message';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
+import { DemandeServiceService } from '../services/demande-service.service';
 
 declare let $;
 
@@ -20,6 +21,7 @@ declare let $;
 export class ChatComponent implements OnInit {
 
   demandeId;
+  demande;
   authUser;
   message = '';
   newMessages = [];
@@ -28,10 +30,13 @@ export class ChatComponent implements OnInit {
   allMessages = [];
   private _prevChatHeight: number = 0;
   echo;
+  showPrononcerVerdictBox = false;
+  nbreBadgesVerdict = 0;
   private messageSubscription: Subscription;
-  constructor(private chatService: ChatService, private userService: UserService, private router: Router,private route:
+  constructor(private chatService: ChatService, private demandeService: DemandeServiceService, private userService: UserService, private router: Router, private route:
     ActivatedRoute, public element: ElementRef) {
 
+    // @ts-ignore 
     window.Pusher = require('pusher-js');
 
     this.echo = new Echo({
@@ -43,49 +48,50 @@ export class ChatComponent implements OnInit {
       forceTLS: true,
       auth: {
         headers: {
-            Authorization: "UE5mSjVCeTZ0V3VKYWt2RGdnbTVQWHJUNUJ4ODRlTm5UZzB5TFdRVA==",
-            Accept : 'application/json, text/plain, */*',
+          Authorization: "UE5mSjVCeTZ0V3VKYWt2RGdnbTVQWHJUNUJ4ODRlTm5UZzB5TFdRVA==",
+          Accept: 'application/json, text/plain, */*',
         },
-    },
-  });
-  this.demandeId = this.route.snapshot.paramMap.get('id');
+      },
+    });
+    this.demandeId = this.route.snapshot.paramMap.get('id');
     console.log('demande.' + this.demandeId);
     this.echo.channel('demande.' + this.demandeId)
-    .listen('MessageSent', (e) => {
-      if(e.user.id != this.authUser.id)
-        this.newMessages.push(e);
-      
+      .listen('MessageSent', (e) => {
+        if (e.user.id != this.authUser.id)
+          this.newMessages.push(e);
+
         console.log("st");
         console.log($('#chatHistory')[0].scrollTop);
         console.log($('#chatHistory')[0].scrollTop);
-        if(($('#chatHistory')[0].scrollHeight - $('#chatHistory')[0].scrollTop) <= 400 )
+        if (($('#chatHistory')[0].scrollHeight - $('#chatHistory')[0].scrollTop) <= 400)
           this.showLastMessages();
-    });
+      });
   }
 
   ngOnInit() {
     this.getAuthUser();
     this.getMessages();
+    this.getDemande();
   }
-  
+
   public ngAfterViewChecked(): void {
     /* need _canScrollDown because it triggers even if you enter text in the textarea */
 
-    if ( this._canScrollDown() ) {
+    if (this._canScrollDown()) {
       console.log("lopo");
-        this.showLastMessages();
-    }       
-} 
+      this.showLastMessages();
+    }
+  }
 
-private _canScrollDown(): boolean {
-  /* compares prev and current scrollHeight */
+  private _canScrollDown(): boolean {
+    /* compares prev and current scrollHeight */
 
-  var can = (this._prevChatHeight !== $('#chatHistory')[0].scrollHeight);
+    var can = (this._prevChatHeight !== $('#chatHistory')[0].scrollHeight);
 
-  this._prevChatHeight = $('#chatHistory')[0].scrollHeight;
+    this._prevChatHeight = $('#chatHistory')[0].scrollHeight;
 
-  return can;
-}
+    return can;
+  }
 
   getAuthUser() {
     this.userService.auth().subscribe((res: any) => {
@@ -96,6 +102,32 @@ private _canScrollDown(): boolean {
       }
     }, (err) => {
       this.router.navigate(['login']);
+    });
+  }
+
+  getDemande() {
+    this.demandeService.getDemande(this.demandeId).subscribe((res: any) => {
+      if (res.success) {
+        this.demande = res.data;
+      } else {
+        Swal.fire({
+          icon: 'error',
+          position: 'top-end',
+          title: 'Oops...',
+          text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    }, (err) => {
+      Swal.fire({
+        icon: 'error',
+        position: 'top-end',
+        title: 'Oops...',
+        text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+        showConfirmButton: false,
+        timer: 2000
+      });
     });
   }
 
@@ -136,7 +168,7 @@ private _canScrollDown(): boolean {
   }
 
   isToday(date) {
-    return new Date(date).setHours(0,0,0,0) == new Date().setHours(0,0,0,0);
+    return new Date(date).setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0);
   }
 
   isDateInThisWeek(date) {
@@ -144,14 +176,14 @@ private _canScrollDown(): boolean {
     const todayObj = new Date();
     const todayDate = todayObj.getDate();
     const todayDay = todayObj.getDay();
-  
+
     // get first date of week
     const firstDayOfWeek = new Date(todayObj.setDate(todayDate - todayDay));
-  
+
     // get last date of week
     const lastDayOfWeek = new Date(firstDayOfWeek);
     lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-  
+
     // if date is equal or within the first and last dates of the week
     return date >= firstDayOfWeek && date <= lastDayOfWeek;
   }
@@ -159,19 +191,54 @@ private _canScrollDown(): boolean {
   preventNewLine(e) {
     if (e.keyCode != 13) return;
     var msg = $("#area").val().replace(/\n/g, "");
-    if (msg)
-    {
-       this.postMessage();
-        $("#area").val("");
+    if (msg) {
+      this.postMessage();
+      $("#area").val("");
     }
     return false;
   }
 
-  showLastMessages(){
-    $('#chatHistory').stop ().animate ({
+  showLastMessages() {
+    $('#chatHistory').stop().animate({
       scrollTop: $('#chatHistory')[0].scrollHeight
     });
-    
+
+  }
+
+  prononcerVerdict() {
+    let body = {
+      demandeId: this.demandeId,
+      nbre: this.nbreBadgesVerdict
+    };
+    this.demandeService.prononcerVerdict(body).subscribe(
+      (res: any) => {
+        if (res.success) {
+          this.message = "Verdict- Nombre total de badges demandés: " + this.demande.usagers.length
+           + " Nombre total de badges accordés: " + this.nbreBadgesVerdict;
+           this.postMessage();
+           this.showPrononcerVerdictBox = false;
+           this.nbreBadgesVerdict = 0;
+        } else {
+          Swal.fire({
+            icon: 'error',
+            position: 'top-end',
+            title: 'Oops...',
+            text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        }
+      }, (err: any) => {
+        Swal.fire({
+          icon: 'error',
+          position: 'top-end',
+          title: 'Oops...',
+          text: 'Une erreur est survenue! Veuillez contacter l\'administrateur!',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    )
   }
 
 }

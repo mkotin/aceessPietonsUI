@@ -27,7 +27,7 @@
           <li *ngIf="message.user_id != authUser.id" class="clearfix">
             <div class="message-data">
               <span class="message-data-name"><i class="fa fa-circle online"></i> {{message.user.fname}}</span>
-              <span *ngIf="isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "shortTime"}}</span>
+              <span *ngIf="isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "H:mm"}}</span>
               <span *ngIf="isDateInThisWeek(message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "E, H:mm"}}</span>
               <span *ngIf="!isDateInThisWeek(message.created_at) && !isToday(message.created_at)" class="message-data-time">{{message.created_at | date : "d MMM, y, H:mm"}}</span> 
             </div>
@@ -76,17 +76,30 @@
           </li>
         </ng-container>
         
+        <div *ngIf="showPrononcerVerdictBox" style="padding: 0;width: 40%; position: relative; left: 60%;" class="card verdict mt-3">
+          <div style="padding: 0;" class="card-body">
+            <div style="padding: 0;" class="row">
+              <div style="padding: 20px;" class="col">
+                Nombre total de badges demandés:  {{demande?.usagers.length}} <br/>
+               <label class="mt-2 mr-2" for=""> Nombre total de badges accordés:</label> <input [(ngModel)]="nbreBadgesVerdict" [max]="demande?.usagers?.length" min="0" value="0" type="number" class="form-control mt-2" /> <br/>
+                <div class="w-100 d-flex justify-content-center mt-2">
+                  <button (click)="prononcerVerdict()" type="button" class="btn btn-primary mr-1">Soumettre</button>
+                  <button type="button" (click)="showPrononcerVerdictBox = false" class="btn btn-light">Annuler</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </ul>
     </div> <!-- end chat-history -->
     
     <form (ngSubmit)="postMessage()" class="chat-message clearfix">
       <textarea id="area" (keypress)="preventNewLine($event)" style="height: 86px;" [(ngModel)]="message" name="chat-message-to-send" placeholder ="Envoyer"></textarea>
               
-      <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
-      <i class="fa fa-file-image-o"></i>
+      <button *ngIf="authUser?.role?.role == 'COMMANDANT'" (click)="showPrononcerVerdictBox = true" style="float: left;"  class="button-send" type="button">Prononcer  un verdict</button>
+      <button  style="float: right;" type="submit"  class="btn btn-primary">Envoyer</button>
       
-      <button type="submit">Envoyer</button>
-
     </form> <!-- end chat-message -->
     
   </div> <!-- end chat -->

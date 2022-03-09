@@ -14,7 +14,7 @@
             </div>
           </div>
         </div>
-        <button *ngIf="authUser.role.role === 'ADMIN' || authUser.role.role === 'STRUCTURE'" routerLink="/app/new_demande" class="btn btn-success btn-block">Demande de titres
+        <button *ngIf="authUser.role.role === 'ADMIN' || authUser.role.role === 'STRUCTURE'" routerLink="/app/new_demande" class="btn btn-success btn-block">Demande de badges
           <i class="mdi mdi-plus"></i>
         </button>
       </div>
@@ -34,7 +34,7 @@
     <li *ngIf="authUser.role.role === 'ADMIN' || authUser.role.role === 'STRUCTURE'" class="nav-item">
       <a class="nav-link" routerLink="/app/new_demande" routerLinkActive="active">
         <i class="menu-icon fa fa-book"></i>
-        <span class="menu-title">Demande de tittres</span>
+        <span class="menu-title">Demande de badges</span>
       </a>
     </li>
     <li  class="nav-item">
@@ -43,7 +43,7 @@
         <span class="menu-title">Liste des Demandes</span>
       </a>
     </li>
-    <li *ngIf="authUser.role.role === 'ADMIN' || authUser.role.role === 'AGENT SSFA' || authUser.role.role === 'COS'" class="nav-item">
+    <li *ngIf="authUser.role.role === 'ADMIN' || authUser.role.role === 'AGENT SSFA' || authUser.role.role === 'COS' || authUser.role.role === 'COMMANDANT'" class="nav-item">
       <a class="nav-link" routerLink="/app/cos" routerLinkActive="active">
         <i class="menu-icon fa fa-folder"></i>
         <span class="menu-title">COS</span>

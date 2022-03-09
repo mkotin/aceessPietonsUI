@@ -85,6 +85,7 @@ export class CosComponent implements OnInit {
   		if (res.success) {
           this.newCOS = null;
           this.sendInvitation = false;
+          this.getCos();
           Swal.fire({
             position: 'top-end',
             icon: 'success',

@@ -7,7 +7,7 @@
 <div class="row">
   <div class="card w-100">
     <div class="card-body">
-      <h4 class="mb-3">Demande de titres d'accès</h4>
+      <h4 class="mb-3">Demande de badges</h4>
       <div class="form-group row">
         <label class="col-sm-3 col-form-label">Objet<span class="text-danger">*</span></label>
         <div class="col-sm-9">
@@ -18,7 +18,7 @@
       <div class="form-group row">
         <label class="col-sm-3 col-form-label">Date de retrait souhaitée</label>
         <div class="col-sm-9">
-          <input  name="retrait" [(ngModel)]="retrait" class="form-control"
+          <input min="23/02/2021" name="retrait" [(ngModel)]="retrait" class="form-control"
                   type="date">
         </div>
       </div>
@@ -257,9 +257,9 @@
                 <div class="col-sm-9">
                   <select required name="temps_acces" [(ngModel)]="addingUsager.temps_acces"
                           class="form-control">
-                    <option value="Temps 1">Temps 1</option>
-                    <option value="Temps 2">Temps 2</option>
-                    <option value="Temps 3">Temps 3</option>
+                    <option value="Jour ouvrés">Jour ouvrés</option>
+                    <option value="Week-end">Week-end</option>
+                    <option value="Tous les jours">Tous les jours</option>
                   </select>
                 </div>
               </div>
@@ -269,9 +269,9 @@
                 <label class="col-sm-3 col-form-label">Type accès <span class="text-danger">*</span></label>
                 <div class="col-sm-9">
                   <select required name="type_acces" [(ngModel)]="addingUsager.type_acces" class="form-control">
-                    <option value="Temps 1">Temps 1</option>
-                    <option value="Temps 2">Temps 2</option>
-                    <option value="Temps 3">Temps 3</option>
+                    <option value="Permanent">Permanent</option>
+                    <option value="Occasionel">Occasionel</option>
+                    <option value="Temporaire">Temporaire</option>
                   </select>
                 </div>
               </div>

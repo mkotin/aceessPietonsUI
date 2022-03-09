@@ -186,7 +186,7 @@ ul {
       
     }
     
-    button {
+    .button-send {
       float: right;
       color: $blue;
       font-size: 16px;
@@ -238,5 +238,23 @@ ul {
 	height: 0;
 }
 
+
+.verdict {
+  border: none;
+  border-radius: 5px;
+}
+
+.verdict label{
+  display: inline-block;
+  float: left;
+  clear: left;
+  text-align: right;
+}
+
+.verdict input {
+display: inline-block;
+height: 25px;
+width: 100px;
+}
 
 

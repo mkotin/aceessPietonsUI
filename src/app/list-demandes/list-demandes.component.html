@@ -32,7 +32,7 @@
                 </div>
                 <div class="d-inline-block mr-4">
                     <div class="form-check">
-                      <input [checked]="statusFilter == 'cos'" (change)="statusFilterChanged('cos')" class="form-check-input demandeCheckFilter" type="checkbox" value="" id="checkFilterCOS">
+                      <input [checked]="statusFilter == 'COS'" (change)="statusFilterChanged('cos')" class="form-check-input demandeCheckFilter" type="checkbox" value="" id="checkFilterCOS">
                       <label class="form-check-label" for="checkFilterCOS">
                         COS
                       </label>
@@ -40,7 +40,7 @@
                 </div>
                 <div class="d-inline-block mr-4">
                     <div class="form-check">
-                      <input [checked]="statusFilter == 'valide'" (change)="statusFilterChanged('valide')" class="form-check-input demandeCheckFilter" type="checkbox" value="" id="checkFilterValide">
+                      <input [checked]="statusFilter == 'VALIDEE'" (change)="statusFilterChanged('validee')" class="form-check-input demandeCheckFilter" type="checkbox" value="" id="checkFilterValide">
                       <label class="form-check-label" for="checkFilterValide">
                         Validée
                       </label>
@@ -48,13 +48,13 @@
                 </div>
                 <div class="d-inline-block mr-4">
                     <div class="form-check">
-                      <input [checked]="statusFilter == 'rejete'" (change)="statusFilterChanged('rejete')" class="form-check-input demandeCheckFilter" type="checkbox" value="" id="checkFilterRejete">
+                      <input [checked]="statusFilter == 'REJETEE'" (change)="statusFilterChanged('rejetee')" class="form-check-input demandeCheckFilter" type="checkbox" value="" id="checkFilterRejete">
                       <label class="form-check-label" for="checkFilterRejete">
                         Rejetée
                       </label>
                     </div>
                 </div>
-                <div class="d-inline-block mr-4">
+                <div *ngIf="authUser?.role.role == 'AGENT SSFA'" class="d-inline-block mr-4">
                     <div class="form-check">
                       <input [checked]="authUser.role.role == 'AGENT SSFA'" (change)="assignFilterChanged()" class="form-check-input demandeCheckFilter" type="checkbox" value="" id="checkFilterAssign">
                       <label class="form-check-label" for="checkFilterAssign">
@@ -62,7 +62,7 @@
                       </label>
                     </div>
                 </div>
-                <div class="d-inline-block mr-4">
+                <div *ngIf="authUser?.role.role != 'STRUCTURE'" class="d-inline-block mr-4">
                     <div class="form-check">
                         Niveau d'accès:
                         <span style="cursor: pointer;" (click)="niveauFilterChanged(1)" [class.badge-outline]="niveauFilter != 1" class="badge badge-secondary mr-1">1</span>
@@ -86,7 +86,7 @@
                     <th>
                         Date de soumission
                     </th>
-                    <th>
+                    <th *ngIf="authUser?.role.role != 'STRUCTURE'">
                         Niveau d'accès
                     </th>
                 </tr>
@@ -106,7 +106,7 @@
                      <td>
                         {{demande.date_soumission}}
                     </td>
-                    <td>
+                    <td *ngIf="authUser?.role.role != 'STRUCTURE'">
                         {{demande.niveau_acces}}
                     </td>
                 </tr>

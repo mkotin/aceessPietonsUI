@@ -82,6 +82,7 @@ import { ChatComponent } from './chat/chat.component';
         FormsModule,
         NgxUiLoaderModule,
         NgxUiLoaderHttpModule,
+        //NgxUiLoaderHttpModule.forRoot({exclude: ["/api/demandeMessages"]}),
         NgxUiLoaderRouterModule,
         NgbModule.forRoot(),
     ],

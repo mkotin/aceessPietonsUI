@@ -90,7 +90,7 @@
         <div>
           <div class="row">
             <div class="col-9">
-              <h4>Séance COS no {{i+1}}</h4>
+              <h4>Séance COS no {{cos?.numero_seance}}</h4>
             </div>
             <div class="col-3 text-right">
               <span *ngIf="getCosStatus(cos) == 'A venir'" class="badge badge-primary">{{getCosStatus(cos)}}</span>
